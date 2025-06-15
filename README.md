@@ -1,24 +1,16 @@
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack Tecnológico del Proyecto
 
-### Backend
-| Tecnología | Uso en el Proyecto |
-|------------|--------------------|
-| **Java 17** | Lenguaje base del sistema |
-| **JPA (Hibernate)** | Persistencia de entidades (Eventos, Personas) |
-| **Maven** | Gestión de dependencias y builds |
-| **PostgreSQL** | Base de datos relacional (Dockerizada) |
+📌 Backend
+Java	Lenguaje principal (JDK 17+)	17
+JPA (Hibernate)	Persistencia y mapeo de entidades (Evento, Persona, etc.)	6.2+
+PostgreSQL	Base de datos relacional (dockerizada)	13
 
-### Frontend
-| Tecnología | Uso en el Proyecto |
-|------------|--------------------|
-| **JavaFX** | Interfaz gráfica (ventanas, formularios) |
-| **Scene Builder** | Diseño de vistas FXML |
-| **CSS** | Estilos personalizados para componentes |
+🎨 Frontend
+JavaFX	Interfaz gráfica (ventanas, formularios)	20
+Scene Builder	Diseño visual de .fxml (arrastrar y soltar componentes)	11+
+CSS	Estilos personalizados (colores, fuentes, bordes)	-
 
-### DevOps & Herramientas
-| Tecnología | Uso en el Proyecto |
-|------------|--------------------|
-| **Docker** | Contenerización de la base de datos |
-| **GitHub Projects** | Gestión de issues y tareas |
-| **PlantUML** | Diagramado de clases y arquitectura |
-| **Lombok** | Reducción de código boilerplate |
+⚙️ DevOps & Herramientas
+Docker	Contenedor de PostgreSQL (sin instalación local)	20+
+Maven	Gestión de dependencias (JavaFX, Hibernate, etc.)	3.8+
+GitHub	Control de versiones + Issues/Projects	-
