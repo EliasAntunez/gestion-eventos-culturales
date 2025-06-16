@@ -1,0 +1,20 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f5f5f5;
+}
+
+.menu-bar {
+    -fx-background-color: #4a6da7;
+}
+
+.menu-bar .label {
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.label {
+    -fx-padding: 10px;
+}
