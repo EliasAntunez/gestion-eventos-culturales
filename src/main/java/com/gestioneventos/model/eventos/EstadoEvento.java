@@ -5,5 +5,5 @@ public enum EstadoEvento {
     CONFIRMADO,
     EN_EJECUCION,
     FINALIZADO,
-    CANCELADO,
+    CANCELADO
 }
