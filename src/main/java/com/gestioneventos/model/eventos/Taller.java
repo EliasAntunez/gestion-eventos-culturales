@@ -1,6 +1,5 @@
 package com.gestioneventos.model.eventos;
 
-import com.gestioneventos.model.Modalidad;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 

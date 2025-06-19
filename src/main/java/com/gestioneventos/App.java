@@ -1,5 +1,6 @@
 package com.gestioneventos;
 
+import com.gestioneventos.util.JPAUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +23,13 @@ public class App extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    
+    @Override
+    public void stop() {
+        // Cerrar EntityManagerFactory al salir
+        JPAUtil.shutdown();
     }
 
     public static void main(String[] args) {

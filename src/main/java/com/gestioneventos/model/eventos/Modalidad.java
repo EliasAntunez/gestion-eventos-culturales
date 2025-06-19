@@ -1,4 +1,4 @@
-package com.gestioneventos.model;
+package com.gestioneventos.model.eventos;
 
 public enum Modalidad {
     PRESENCIAL,
