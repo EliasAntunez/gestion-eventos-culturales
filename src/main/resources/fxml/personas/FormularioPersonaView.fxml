@@ -11,15 +11,18 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <!-- 
   Formulario para crear o editar una persona.
   Se utiliza tanto para nuevas personas como para modificar existentes.
 -->
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.FormularioPersonaController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/styles-formulariopersona.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.FormularioPersonaController">
    <top>
       <!-- Sección superior con título -->
-      <VBox alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+      <VBox styleClass="encabezado-persona" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
          <children>
             <!-- Título dinámico (cambia según sea creación o edición) -->
             <Label fx:id="lblTitulo" text="Nueva Persona">
@@ -36,34 +39,63 @@
    <center>
       <!-- Formulario organizado en forma de grilla -->
       <GridPane hgap="10.0" vgap="15.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <!-- Columna de etiquetas -->
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="100.0" />
-          <!-- Columna de campos de entrada -->
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <!-- Filas para cada campo -->
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         <columnConstraints>
+            <!-- Columna de etiquetas -->
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+         <!-- Filas para cada campo -->
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <!-- Etiquetas para los campos -->
-            <Label text="Nombre:" />
-            <Label text="Apellido:" GridPane.rowIndex="1" />
-            <Label text="DNI:" GridPane.rowIndex="2" />
-            <Label text="Teléfono:" GridPane.rowIndex="3" />
-            <Label text="Email:" GridPane.rowIndex="4" />
-            
-            <!-- Campos de entrada -->
-            <TextField fx:id="txtNombre" GridPane.columnIndex="1" />
-            <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="txtDni" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+            <children>
+            <!-- Etiquetas alineadas con los campos usando HBox -->
+            <HBox spacing="2" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
+               <children>
+                     <Label text="Nombre:" style="-fx-text-fill: #222;"/>
+                     <Label text="*" style="-fx-text-fill: #d90429; -fx-font-weight: bold;"/>
+               </children>
+            </HBox>
+            <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+         
+            <HBox spacing="2" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
+               <children>
+                     <Label text="Apellido:" style="-fx-text-fill: #222;"/>
+                     <Label text="*" style="-fx-text-fill: #d90429; -fx-font-weight: bold;"/>
+               </children>
+            </HBox>
+            <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+         
+            <HBox spacing="2" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="0">
+               <children>
+                     <Label text="DNI:" style="-fx-text-fill: #222;"/>
+                     <Label text="*" style="-fx-text-fill: #d90429; -fx-font-weight: bold;"/>
+               </children>
+            </HBox>
+            <TextField fx:id="txtDni" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <tooltip>
+                     <Tooltip text="Complete el DNI sin puntos"/>
+               </tooltip>
+            </TextField>
+         
+            <HBox spacing="2" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="0">
+               <children>
+                     <Label text="Email:" style="-fx-text-fill: #222;"/>
+                     <Label text="*" style="-fx-text-fill: #d90429; -fx-font-weight: bold;"/>
+               </children>
+            </HBox>
+            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+         
+            <HBox spacing="2" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="0">
+               <children>
+                     <Label text="Teléfono:" style="-fx-text-fill: #222;"/>
+               </children>
+            </HBox>
+            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />

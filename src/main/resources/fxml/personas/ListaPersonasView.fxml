@@ -15,26 +15,27 @@
   Vista para la gestión de personas.
   Muestra una tabla con todas las personas y controles para buscar, agregar, editar y eliminar.
 -->
-<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.ListaPersonasController">
+
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/styles-listapersonas.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.ListaPersonasController">
    <top>
-      <!-- Sección superior con título y controles de búsqueda -->
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <!-- Título de la pantalla -->
-            <Label text="Gestión de Personas">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <!-- Barra de búsqueda y botones principales -->
+            <!-- Flecha y título en la misma fila -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="titulo-personas">
+               <children>
+                  <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#volver" text="← Volver"/>
+                  <Label fx:id="labelGestion" text="Gestión de Personas">
+                        <font>
+                           <Font name="System Bold" size="18.0" />
+                        </font>
+                  </Label>
+               </children>
+            </HBox>
+            <!-- Barra de búsqueda -->
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <!-- Campo de búsqueda -->
                   <TextField fx:id="txtBuscar" promptText="Buscar por nombre o DNI" HBox.hgrow="ALWAYS" />
-                  <!-- Botón para ejecutar la búsqueda -->
                   <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#buscarPersonas" text="Buscar" />
-                  <!-- Botón para crear una nueva persona -->
-                  <Button fx:id="btnNuevo" mnemonicParsing="false" onAction="#nuevaPersona" text="Nueva Persona" />
                </children>
             </HBox>
          </children>
@@ -47,7 +48,6 @@
       <!-- Tabla de personas -->
       <TableView fx:id="tablaPersonas" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <!-- Columnas de la tabla -->
           <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
           <TableColumn fx:id="colNombre" prefWidth="100.0" text="Nombre" />
           <TableColumn fx:id="colApellido" prefWidth="100.0" text="Apellido" />
@@ -59,7 +59,6 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <columnResizePolicy>
-            <!-- Ajusta automáticamente el ancho de las columnas -->
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
@@ -68,12 +67,9 @@
       <!-- Barra inferior con botones de acción -->
       <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <!-- Botón para editar la persona seleccionada -->
+            <Button fx:id="btnNuevo" mnemonicParsing="false" onAction="#nuevaPersona" text="Nueva Persona" />
             <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#editarPersona" text="Editar" />
-            <!-- Botón para eliminar la persona seleccionada -->
             <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#eliminarPersona" text="Eliminar" />
-            <!-- Botón para volver a la pantalla anterior -->
-            <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#volver" text="Volver" />
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
