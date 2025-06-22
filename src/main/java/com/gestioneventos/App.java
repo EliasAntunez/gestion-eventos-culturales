@@ -16,7 +16,7 @@ public class App extends Application {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainView.fxml"));
             Scene scene = new Scene(root, 800, 600);
-            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/css/styles-main.css").toExternalForm());
             primaryStage.setTitle("Gestión de Eventos Culturales");
             primaryStage.setScene(scene);
             primaryStage.show();

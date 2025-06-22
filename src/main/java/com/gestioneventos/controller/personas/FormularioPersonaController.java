@@ -175,9 +175,7 @@ public class FormularioPersonaController implements Initializable {
         Alert alerta = new Alert(AlertType.INFORMATION);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);
-        alerta.setContentText("La persona " + personaGuardada.getNombre() + " " + 
-                            personaGuardada.getApellido() + " ha sido " + 
-                            operacion + " correctamente.");
+        alerta.setContentText("La persona " + personaGuardada.getNombre() + " " + personaGuardada.getApellido() + " ha sido " + operacion + " correctamente.");
         alerta.showAndWait();
     }
     
@@ -225,6 +223,12 @@ public class FormularioPersonaController implements Initializable {
             lblError.setText("El DNI es obligatorio");
             return false;
         }
+        //validar email
+        if (txtEmail.getText() == null || txtEmail.getText().trim().isEmpty()) {
+            lblError.setText("El Email es obligatorio");
+            return false;
+        }
+    
         
         // Validar DNI duplicado
         // Si es edición y el DNI cambió, o si es una nueva persona

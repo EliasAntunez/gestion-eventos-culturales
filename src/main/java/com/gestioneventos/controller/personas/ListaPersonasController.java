@@ -189,14 +189,17 @@ public class ListaPersonasController implements Initializable {
             FormularioPersonaController controller = loader.getController();
             controller.setListaPersonasController(this);
             
-            // Creamos y configuramos la nueva ventana
             Stage stage = new Stage();
             stage.setTitle("Nueva Persona");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL); // Modal para bloquear interacción con ventana padre
-            stage.showAndWait(); // Muestra y espera hasta que se cierre
+            Scene scene = new Scene(root);
+            // Agrega la hoja de estilos
+            //scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
             
         } catch (IOException e) {
+            e.printStackTrace();
             mostrarMensajeError("Error al abrir el formulario", e.getMessage());
         }
     }
