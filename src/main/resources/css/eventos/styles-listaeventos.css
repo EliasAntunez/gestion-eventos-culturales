@@ -1,97 +1,143 @@
 /* === ESTILOS PARA LA LISTA DE EVENTOS === */
 .root {
     -fx-font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     -fx-background-color: #f0f4f8;
+    background-color: #f0f4f8;
 }
 
-/* Título y barra superior */
-.titulo-personas {
+/* Titulares y barra superior */
+.titulo-eventos {
     -fx-background-color: #3a506b;
+    background-color: #3a506b;
     -fx-text-fill: #fff;
-    -fx-padding: 10px 24px;
+    color: #fff;
+    -fx-padding: 8px 24px;
+    padding: 8px 24px;
     -fx-font-size: 20px;
+    font-size: 20px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-min-height: 48px;
+    min-height: 48px;
 }
-.label {
+#labelGestion {
     -fx-text-fill: #fff;
+    color: #fff;
     -fx-font-weight: bold;
+    font-weight: bold;
 }
 
 /* Botones */
-.button, #btnNuevo, #btnEditar, #btnEliminar, #btnVolver, #btnBuscar {
+.button, #btnNuevo, #btnEditar, #btnEliminar, #btnBuscar {
     -fx-background-color: #57585a;
+    background-color: #57585a;
     -fx-text-fill: #fff;
+    color: #fff;
     -fx-background-radius: 6px;
+    border-radius: 6px;
     -fx-padding: 8px 18px;
+    padding: 8px 18px;
     -fx-font-size: 14px;
+    font-size: 14px;
     -fx-cursor: hand;
+    cursor: pointer;
     -fx-border-color: transparent;
+    border-color: transparent;
 }
-.button:hover, #btnNuevo:hover, #btnEditar:hover, #btnEliminar:hover, #btnVolver:hover, #btnBuscar:hover {
+.button:hover, #btnNuevo:hover, #btnEditar:hover, #btnEliminar:hover, #btnBuscar:hover {
     -fx-background-color: #686b6e;
+    background-color: #686b6e;
     -fx-text-fill: #000000;
+    color: #000000;
 }
 #btnNuevo {
     -fx-background-color: #26a103;
+    background-color: #26a103;
 }
 #btnNuevo:hover {
     -fx-background-color: #5bd33a;
+    background-color: #5bd33a;
 }
 #btnEliminar {
     -fx-background-color: #ef476f;
+    background-color: #ef476f;
 }
 #btnEliminar:hover {
     -fx-background-color: #d90429;
+    background-color: #d90429;
     -fx-text-fill: #000000;
-}
-#btnVolver {
-    -fx-background-color: transparent;
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 12px;
-    -fx-border-color: transparent;
-    -fx-padding: 0 10px;
-}
-#btnVolver:hover {
-    -fx-background-color: #e0e1dd;
-    -fx-text-fill: #000000;
+    color: #000000;
 }
 #btnBuscar {
     -fx-background-color: #4e9af1;
+    background-color: #4e9af1;
 }
 #btnBuscar:hover {
     -fx-background-color: #3a7bc8;
+    background-color: #3a7bc8;
 }
 
 /* Tabla */
 .table-view {
     -fx-background-color: #fff;
+    background-color: #fff;
     -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
     -fx-border-radius: 8px;
+    border-radius: 8px;
 }
 .table-view .column-header-background {
     -fx-background-color: #3a506b;
+    background-color: #3a506b;
 }
 .table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
+    background-color: transparent;
 }
 .table-view .column-header .label {
     -fx-text-fill: #f0f4f8;
+    color: #f0f4f8;
     -fx-font-weight: bold;
+    font-weight: bold;
 }
 .table-cell {
     -fx-text-fill: #22223b;
+    color: #22223b;
 }
 .table-row-cell:filled:selected, .table-cell:filled:selected {
     -fx-background-color: #9b9797;
+    background-color: #9b9797;
 }
 
 /* TextField */
 .text-field {
     -fx-background-color: #fff;
+    background-color: #fff;
     -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
     -fx-border-radius: 5px;
+    border-radius: 5px;
     -fx-padding: 6px 10px;
+    padding: 6px 10px;
     -fx-font-size: 14px;
+    font-size: 14px;
     -fx-font-weight: normal;
+    font-weight: normal;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+}
+
+/* Label */
+.label {
+    -fx-text-fill: #222222;
+    color: #222222;
 }

@@ -152,7 +152,7 @@ public class ListaPersonasController implements Initializable {
         // Limpiamos la lista actual
         listaPersonas.clear();
         // Obtenemos todas las personas del servicio
-        List<Persona> personas = personaService.obtenerTodos();
+        List<Persona> personas = personaService.buscarTodas();
         // Añadimos las personas a la lista observable
         listaPersonas.addAll(personas);
         // Establecemos la lista observable como fuente de datos de la tabla

@@ -21,11 +21,11 @@ public class Taller extends Evento {
     
     // Constructor con los atributos específicos de Taller
     public Taller(String nombre, LocalDate fechaInicio, int duracionEstimada,
-                 String ubicacion, int capacidadMaxima, double costoBase,
+                 EstadoEvento estadoEvento, boolean permitirInscripcion,
                  int cupoMaximo, Modalidad modalidad) {
-        super(nombre, fechaInicio, duracionEstimada, ubicacion, capacidadMaxima, costoBase);
-        this.cupoMaximo = cupoMaximo;
-        this.modalidad = modalidad;
+        super(nombre, fechaInicio, duracionEstimada, estadoEvento, permitirInscripcion);
+        setCupoMaximo(cupoMaximo);
+        setModalidad(modalidad);
     }
     
     public int getCupoMaximo() {
@@ -57,18 +57,10 @@ public class Taller extends Evento {
     }
     
     @Override
-    public double calcularCostoTotal() {
-        double costoBase = getCostoBase();
-        // Los talleres tienen un costo adicional por materiales
-        double costoMateriales = 2000.0 * cupoMaximo;
-        return costoBase + costoMateriales;
-    }
-    
-    @Override
     public void validarRequisitosEspecificos() {
         // Un taller requiere al menos un instructor
         if (getParticipaciones().stream().noneMatch(p -> 
-                p.getRol() == com.gestioneventos.model.participaciones.RolParticipacion.EXPOSITOR)) {
+                p.getRol() == com.gestioneventos.model.participaciones.RolParticipacion.INSTRUCTOR)) {
             throw new IllegalStateException("El taller requiere al menos un instructor");
         }
     }

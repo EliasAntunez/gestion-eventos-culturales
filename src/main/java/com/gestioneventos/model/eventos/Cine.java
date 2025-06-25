@@ -20,11 +20,11 @@ public class Cine extends Evento {
     
     // Constructor con los atributos específicos
     public Cine(String nombre, LocalDate fechaInicio, int duracionEstimada,
-               String ubicacion, int capacidadMaxima, double costoBase,
+               EstadoEvento estadoEvento, boolean permitirInscripcion,
                int ordenProyeccion, String tituloPelicula) {
-        super(nombre, fechaInicio, duracionEstimada, ubicacion, capacidadMaxima, costoBase);
-        this.ordenProyeccion = ordenProyeccion;
-        this.tituloPelicula = tituloPelicula;
+        super(nombre, fechaInicio, duracionEstimada, estadoEvento, permitirInscripcion);
+        setOrdenProyeccion(ordenProyeccion);
+        setTituloPelicula(tituloPelicula);
     }
     
     public int getOrdenProyeccion() {
@@ -52,14 +52,6 @@ public class Cine extends Evento {
     @Override
     public String obtenerDescripcionEspecifica() {
         return "Proyección #" + ordenProyeccion + ": " + tituloPelicula;
-    }
-    
-    @Override
-    public double calcularCostoTotal() {
-        double costoBase = getCostoBase();
-        // Costos adicionales por derechos de proyección
-        double costoDerechos = 5000.0;
-        return costoBase + costoDerechos;
     }
     
     @Override

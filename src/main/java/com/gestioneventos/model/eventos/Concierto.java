@@ -21,11 +21,11 @@ public class Concierto extends Evento {
     
     // Constructor con los atributos específicos
     public Concierto(String nombre, LocalDate fechaInicio, int duracionEstimada,
-                    String ubicacion, int capacidadMaxima, double costoBase,
+                    EstadoEvento estadoEvento, boolean permitirInscripcion,
                     TipoEntrada tipoEntrada, String artistaPrincipal) {
-        super(nombre, fechaInicio, duracionEstimada, ubicacion, capacidadMaxima, costoBase);
-        this.tipoEntrada = tipoEntrada;
-        this.artistaPrincipal = artistaPrincipal;
+        super(nombre, fechaInicio, duracionEstimada, estadoEvento, permitirInscripcion);
+        setTipoEntrada(tipoEntrada);   
+        setArtistaPrincipal(artistaPrincipal);
     }
     
     public TipoEntrada getTipoEntrada() {
@@ -54,14 +54,6 @@ public class Concierto extends Evento {
     public String obtenerDescripcionEspecifica() {
         return "Concierto de " + artistaPrincipal + " - " + 
                (tipoEntrada == TipoEntrada.GRATUITA ? "Entrada gratuita" : "Entrada paga");
-    }
-    
-    @Override
-    public double calcularCostoTotal() {
-        double costoBase = getCostoBase();
-        // Los conciertos gratuitos tienen un subsidio, los pagos tienen costo adicional de seguridad
-        double costoAdicional = (tipoEntrada == TipoEntrada.GRATUITA) ? -costoBase * 0.3 : 15000.0;
-        return costoBase + costoAdicional;
     }
     
     @Override

@@ -1,146 +1,226 @@
 /* === ESTILOS GENERALES PARA LA PANTALLA PRINCIPAL === */
 .root {
     -fx-font-family: "Segoe UI", Arial, Helvetica, sans-serif;  
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     -fx-background-color: linear-gradient(to bottom, #f0f4f8, #d9e4f5);
+    background-color: #e7eef6; /* Simplified fallback */
 }
 
 /* Encabezado y menú */
 .header-box {
     -fx-background-color: #3a506b;
+    background-color: #3a506b;
     -fx-padding: 12px;
+    padding: 12px;
     -fx-border-color: transparent transparent #b8c1ec transparent;
+    border-color: transparent transparent #b8c1ec transparent;
     -fx-border-width: 0 0 2px 0;
+    border-width: 0 0 2px 0;
     -fx-border-style: solid;
+    border-style: solid;
 }
 .header-title {
     -fx-text-fill: #fff;
+    color: #fff;
     -fx-font-size: 22px;
+    font-size: 22px;
     -fx-font-weight: bold;
+    font-weight: bold;
 }
 .menu-bar {
     -fx-background-color: #3a506b;
+    background-color: #3a506b;
     -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
     -fx-border-width: 0 0 2px 0;
+    border-width: 0 0 2px 0;
     -fx-border-style: solid;
-    -fx-alignment: left; 
+    border-style: solid;
+    -fx-alignment: CENTER-LEFT; 
 }
 .menu-bar > .container > .menu {
     -fx-pref-width: 80px;
     -fx-alignment: center;
     -fx-font-size: 14.5px;
+    font-size: 14.5px;
 }
 .menu-bar .label {
     -fx-text-fill: #ffffff;
+    color: #ffffff;
 }
 .menu-item .label {
     -fx-text-fill: #22223b;
+    color: #22223b;
 }
 .menu-item:hover .label {
     -fx-text-fill: #f0f4f8;
+    color: #f0f4f8;
     -fx-font-weight: normal;
+    font-weight: normal;
 }
 
 /* === CALENDARIO === */
 .calendar-container {
     -fx-background-color: white;
+    background-color: white;
     -fx-background-radius: 12px;
+    border-radius: 12px;
     -fx-padding: 20px;
+    padding: 20px;
     -fx-effect: dropshadow(gaussian, #b8c1ec, 16, 0.2, 0, 4);
+    box-shadow: 0 4px 16px rgba(184, 193, 236, 0.2);
     -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
     -fx-border-width: 2px;
+    border-width: 2px;
     -fx-border-radius: 12px;
+    border-radius: 12px;
 }
 .calendar-separator {
     -fx-background-color: #b8c1ec;
+    background-color: #b8c1ec;
     -fx-pref-height: 2px;
+    height: 2px;
     -fx-max-height: 2px;
+    max-height: 2px;
     -fx-min-height: 2px;
+    min-height: 2px;
     -fx-padding: 0 0 8px 0;
+    padding: 0 0 8px 0;
 }
 .calendar-header {
     -fx-alignment: center;
+    text-align: center;
     -fx-padding: 0 0 10px 0;
+    padding: 0 0 10px 0;
 }
 .month-label {
     -fx-font-size: 18px;
+    font-size: 18px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-min-width: 200px;
+    min-width: 200px;
     -fx-alignment: center;
+    text-align: center;
 }
 .button.nav-button {
     -fx-text-fill: #0065e1;
+    color: #0065e1;
     -fx-background-color: transparent;
+    background-color: transparent;
     -fx-font-size: 18px;
+    font-size: 18px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-cursor: hand;
+    cursor: pointer;
 }
 .button.nav-button:hover {
     -fx-text-fill: #5bc0be;
+    color: #5bc0be;
 }
 .calendar-grid {
     -fx-padding: 5px;
+    padding: 5px;
 }
 .day-header {
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-alignment: center;
+    text-align: center;
     -fx-padding: 5px;
+    padding: 5px;
     -fx-max-width: Infinity;
+    max-width: 100%;
     -fx-max-height: Infinity;
+    max-height: 100%;
     -fx-min-width: 28px;
+    min-width: 28px;
     -fx-min-height: 28px;
+    min-height: 28px;
     -fx-text-alignment: center;
+    text-align: center;
 }
 .calendar-days-grid {
     -fx-padding: 5px;
+    padding: 5px;
 }
 .calendar-day {
     -fx-border-color: #000000;
+    border-color: #000000;
     -fx-alignment: center;
+    text-align: center;
     -fx-padding: 10px;
+    padding: 10px;
     -fx-background-radius: 4px;
+    border-radius: 4px;
     -fx-cursor: hand;
+    cursor: pointer;
 }
 .calendar-day:hover {
     -fx-background-color: #f0f4f8;
+    background-color: #f0f4f8;
 }
 .today {
     -fx-background-color: #5bc0be;
+    background-color: #5bc0be;
     -fx-text-fill: white;
+    color: white;
 }
 .event-day {
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-text-fill: #3a506b;
+    color: #3a506b;
 }
 .event-day .text {
     -fx-underline: true;
+    text-decoration: underline;
 }
 
 /* === PANEL DE EVENTOS (DERECHA) === */
 .events-container {
     -fx-background-color: white;
+    background-color: white;
     -fx-background-radius: 12px;
+    border-radius: 12px;
     -fx-padding: 20px;
+    padding: 20px;
     -fx-effect: dropshadow(gaussian, #b8c1ec, 16, 0.2, 0, 4);
+    box-shadow: 0 4px 16px rgba(184, 193, 236, 0.2);
 }
 .section-title {
     -fx-font-size: 18px;
+    font-size: 18px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-padding: 0 0 10px 0;
+    padding: 0 0 10px 0;
 }
 .section-subtitle {
     -fx-font-size: 16px;
+    font-size: 16px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-padding: 10px 0 5px 0;
+    padding: 10px 0 5px 0;
 }
 .events-list {
     -fx-pref-height: 300px;
+    height: 300px;
     -fx-border-color: #e0e0e0;
+    border-color: #e0e0e0;
     -fx-border-radius: 4px;
+    border-radius: 4px;
 }
 .stats-container {
     -fx-padding: 10px 0 0 0;
+    padding: 10px 0 0 0;
 }
 .stat-value {
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-text-fill: #3a506b;
+    color: #3a506b;
 }

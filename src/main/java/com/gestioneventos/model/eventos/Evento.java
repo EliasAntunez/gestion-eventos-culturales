@@ -42,18 +42,7 @@ public abstract class Evento {
     
     // Indica si se permiten inscripciones al evento
     @Column(name = "permite_inscripcion")       // Nombre personalizado de la columna en BD
-    private boolean permitirInscripcion;
-    
-    // Ubicación donde se realizará el evento
-    @Column(length = 200)                       // Longitud máxima del campo
-    private String ubicacion;
-    
-    // Costo base del evento (sin incluir costos específicos del tipo de evento)
-    @Column(name = "costo_base")
-    private double costoBase;
-    
-    // Capacidad máxima de asistentes
-    private int capacidadMaxima;
+    private boolean permiteInscripcion;
     
     // Relación con las participaciones (podría implementarse según necesidades)
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -67,7 +56,7 @@ public abstract class Evento {
         // Inicializa el evento como PLANIFICADO por defecto
         this.estadoEvento = EstadoEvento.EN_PLANIFICACION;
         // Por defecto no se permiten inscripciones hasta confirmar
-        this.permitirInscripcion = false;
+        this.permiteInscripcion = false;
         // Lista vacía de participaciones
         this.participaciones = new ArrayList<>();
     }
@@ -79,21 +68,17 @@ public abstract class Evento {
      * @param nombre Nombre descriptivo del evento
      * @param fechaInicio Fecha en que inicia el evento
      * @param duracionEstimada Duración del evento en días
-     * @param ubicacion Lugar donde se realizará
-     * @param capacidadMaxima Número máximo de asistentes
-     * @param costoBase Costo base del evento
      */
     protected Evento(String nombre, LocalDate fechaInicio, int duracionEstimada,
-                    String ubicacion, int capacidadMaxima, double costoBase) {
+                    EstadoEvento estadoEvento, boolean permiteInscripcion) {
         this();  // Llama al constructor vacío para inicializar valores por defecto
         
         // Usa los setters para aprovechar las validaciones
         setNombre(nombre);
         setFechaInicio(fechaInicio);
         setDuracionEstimada(duracionEstimada);
-        setUbicacion(ubicacion);
-        setCapacidadMaxima(capacidadMaxima);
-        setCostoBase(costoBase);
+        setEstadoEvento(estadoEvento);
+        setPermiteInscripcion(permiteInscripcion);
     }
     
     // -------------- GETTERS Y SETTERS --------------
@@ -181,75 +166,21 @@ public abstract class Evento {
         return estadoEvento;
     }
 
+    /*set de EstadoEvento */
+    public void setEstadoEvento(EstadoEvento estadoEvento) {
+        this.estadoEvento = estadoEvento;
+    }
+
     /**
      * Verifica si el evento permite inscripciones.
      * @return true si permite inscripciones, false en caso contrario
      */
-    public boolean isPermitirInscripcion() {
-        return permitirInscripcion;
+    public boolean getPermiteInscripcion() {
+        return permiteInscripcion;
     }
-
-    /**
-     * Obtiene la ubicación del evento.
-     * @return Ubicación
-     */
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    /**
-     * Establece la ubicación con validaciones.
-     * @param ubicacion Ubicación a establecer
-     * @throws IllegalArgumentException si la ubicación es nula o vacía
-     */
-    public void setUbicacion(String ubicacion) {
-        // Validación: la ubicación no puede ser nula ni vacía
-        if (ubicacion == null || ubicacion.trim().isEmpty()) {
-            throw new IllegalArgumentException("La ubicación no puede ser nula o vacía");
-        }
-        this.ubicacion = ubicacion;
-    }
-
-    /**
-     * Obtiene la capacidad máxima del evento.
-     * @return Capacidad máxima
-     */
-    public int getCapacidadMaxima() {
-        return capacidadMaxima;
-    }
-
-    /**
-     * Establece la capacidad máxima con validaciones.
-     * @param capacidadMaxima Capacidad a establecer
-     * @throws IllegalArgumentException si la capacidad no es positiva
-     */
-    public void setCapacidadMaxima(int capacidadMaxima) {
-        // Validación: la capacidad debe ser positiva
-        if (capacidadMaxima <= 0) {
-            throw new IllegalArgumentException("La capacidad máxima debe ser un valor positivo");
-        }
-        this.capacidadMaxima = capacidadMaxima;
-    }
-
-    /**
-     * Obtiene el costo base del evento.
-     * @return Costo base
-     */
-    public double getCostoBase() {
-        return costoBase;
-    }
-
-    /**
-     * Establece el costo base con validaciones.
-     * @param costoBase Costo a establecer
-     * @throws IllegalArgumentException si el costo es negativo
-     */
-    public void setCostoBase(double costoBase) {
-        // Validación: el costo no puede ser negativo
-        if (costoBase < 0) {
-            throw new IllegalArgumentException("El costo base no puede ser negativo");
-        }
-        this.costoBase = costoBase;
+    /*set de permitir inscripcion */
+    public void setPermiteInscripcion(boolean permitirInscripcion) {
+        this.permiteInscripcion = permitirInscripcion;
     }
 
     /**
@@ -303,32 +234,9 @@ public abstract class Evento {
      * Solo se permiten inscripciones para eventos CONFIRMADOS.
      */
     private void actualizarPermitirInscripcion() {
-        this.permitirInscripcion = (this.estadoEvento == EstadoEvento.CONFIRMADO);
+        this.permiteInscripcion = (this.estadoEvento == EstadoEvento.CONFIRMADO);
     }
     
-    /**
-     * Calcula la fecha de finalización basada en la fecha de inicio y duración.
-     * @return la fecha de finalización estimada
-     */
-    public LocalDate calcularFechaFinalizacion() {
-        // Si no hay fecha de inicio establecida, devuelve null
-        if (fechaInicio == null) {
-            return null;
-        }
-        // Calcula la fecha sumando los días de duración
-        return fechaInicio.plusDays(duracionEstimada);
-    }
-    
-    /**
-     * Verifica si el evento está actualmente en curso.
-     * @return true si el evento está en curso, false en caso contrario
-     */
-    public boolean estaEnCurso() {
-        LocalDate hoy = LocalDate.now();
-        return fechaInicio != null &&
-               !hoy.isBefore(fechaInicio) && 
-               !hoy.isAfter(calcularFechaFinalizacion());
-    }
     
     /**
      * Añade una participación al evento.
@@ -343,13 +251,8 @@ public abstract class Evento {
         }
         
         // Validación: solo se permiten inscripciones si la bandera está activada
-        if (!permitirInscripcion) {
+        if (!permiteInscripcion) {
             throw new IllegalStateException("No se permiten inscripciones para este evento");
-        }
-        
-        // Validación: no exceder la capacidad máxima
-        if (participaciones.size() >= capacidadMaxima) {
-            throw new IllegalStateException("Evento con capacidad máxima alcanzada");
         }
         
         // Asociación bidireccional
@@ -367,13 +270,6 @@ public abstract class Evento {
      */
     public abstract String obtenerDescripcionEspecifica();
     
-    /**
-     * Método abstracto para calcular el costo total del evento.
-     * Cada subclase debe implementar este método según sus características.
-     * 
-     * @return El costo total del evento, incluyendo costos específicos
-     */
-    public abstract double calcularCostoTotal();
     
     /**
      * Método abstracto para validar requisitos específicos del tipo de evento.
@@ -394,8 +290,7 @@ public abstract class Evento {
         return "Evento: " + nombre + 
                " (Inicia: " + fechaInicio + 
                ", Duración: " + duracionEstimada + " días" +
-               ", Estado: " + estadoEvento + 
-               ", Ubicación: " + ubicacion + ")";
+               ", Estado: " + estadoEvento + ")";
     }
     
     /**

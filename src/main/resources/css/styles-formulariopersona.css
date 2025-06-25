@@ -1,65 +1,152 @@
 /* === ESTILOS PARA EL FORMULARIO DE PERSONA === */
 .root {
     -fx-font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     -fx-background-color: #f0f4f8;
+    background-color: #f0f4f8;
+    -fx-spacing: 10px;
 }
+
 .encabezado-persona {
     -fx-background-color: #3a506b;
+    background-color: #3a506b;
     -fx-padding: 14px 20px 14px 20px;
+    padding: 14px 20px 14px 20px;
     -fx-background-radius: 8px 8px 0 0;
+}
+
+.button {
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    padding: 8px 16px;
 }
 
 /* Título */
 #lblTitulo {
     -fx-font-size: 18px;
+    font-size: 18px;
     -fx-font-weight: bold;
+    font-weight: bold;
     -fx-text-fill: #ffffff;
 }
+
 #btnGuardar {
     -fx-background-color: #26a103;
+    background-color: #26a103;
     -fx-text-fill: #fff;
 }
+
 #btnGuardar:hover {
     -fx-background-color: #5bd33a;
+    background-color: #5bd33a;
     -fx-text-fill: #000000;
 }
+
 #btnCancelar {
     -fx-background-color: #ef476f;
+    background-color: #ef476f;
     -fx-text-fill: #fff;
 }
+
 #btnCancelar:hover {
     -fx-background-color: #d90429;
+    background-color: #d90429;
     -fx-text-fill: #000000;
 }
 
 /* TextField */
 .text-field:empty, .text-field.error {
     -fx-border-color: #d90429;
+    border-color: #d90429;
     -fx-border-width: 2px;
+    border-width: 2px;
 }
+
 .text-field {
     -fx-background-color: #fff;
+    background-color: #fff;
     -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
     -fx-border-radius: 5px;
+    border-radius: 5px;
     -fx-padding: 6px 10px;
+    padding: 6px 10px;
     -fx-font-size: 14px;
+    font-size: 14px;
     -fx-font-weight: normal;
+    font-weight: normal;
 }
 
 .campo-obligatorio {
     -fx-text-fill: #d90429;
     -fx-font-weight: bold;
+    font-weight: bold;
 }
+
 /* Mensaje de error */
 #lblError {
     -fx-text-fill: red;
     -fx-font-weight: bold;
+    font-weight: bold;
 }
+
 /* Botones */
 .button{
     -fx-background-radius: 6px;
     -fx-padding: 8px 18px;
+    padding: 8px 18px;
     -fx-font-size: 14px;
+    font-size: 14px;
     -fx-cursor: hand;
+    cursor: pointer;
     -fx-border-color: transparent;
+    border-color: transparent;
+}
+
+.section-header {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #3a506b;
+    -fx-padding: 5px 0 8px 0;
+    padding: 5px 0 8px 0;
+    -fx-border-color: transparent transparent #b8c1ec transparent;
+    border-color: transparent transparent #b8c1ec transparent;
+    -fx-border-width: 0 0 1 0;
+    border-width: 0 0 1px 0;
+}
+
+.grid-section {
+    -fx-background-color: #f8f9fa;
+    background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 15px;
+    padding: 15px;
+    -fx-border-color: #dee2e6;
+    border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
+}
+
+.separator {
+    -fx-background-color: #b8c1ec;
+    background-color: #b8c1ec;
+    -fx-opacity: 0.7;
+    opacity: 0.7;
+    -fx-padding: 2px 0 2px 0;
+    padding: 2px 0 2px 0;
+}
+
+.text-field, .combo-box, .date-picker {
+    -fx-padding: 8px 10px;
+    padding: 8px 10px;
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-background-radius: 4px;
 }

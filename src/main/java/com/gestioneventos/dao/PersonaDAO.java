@@ -16,11 +16,14 @@ public interface PersonaDAO extends GenericDAO<Persona, Long> {
      * @return Optional con la Persona si existe, o vacío si no
      */
     Optional<Persona> findByDni(String dni);
-    
+
+    //existsByDniExcludingId
+    //boolean existsByDniExcludingId(String dni, Long idExcluir);
+
     /**
      * Busca personas por nombre y/o apellido (búsqueda parcial).
      * @param query Texto para buscar en nombre y apellido
      * @return Lista de personas que coinciden con la búsqueda
      */
-    List<Persona> findByNombreOrApellido(String query);
+    List<Persona> findByNombreOrApellido(String texto);
 }

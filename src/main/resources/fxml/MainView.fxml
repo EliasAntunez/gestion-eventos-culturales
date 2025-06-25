@@ -22,7 +22,6 @@
                     <MenuItem text="Salir" onAction="#salir"/>
                 </Menu>
                 <Menu text="Eventos">
-                    <MenuItem text="Nuevo evento" onAction="#nuevoEvento"/>
                     <MenuItem text="Gestionar eventos" onAction="#gestionarEventos"/>
                 </Menu>
                 <Menu text="Personas">
