@@ -21,11 +21,11 @@ public class Feria extends Evento {
     
     // Constructor con los atributos específicos
     public Feria(String nombre, LocalDate fechaInicio, int duracionEstimada,
-                String ubicacion, int capacidadMaxima, double costoBase,
+                EstadoEvento estadoEvento, boolean permitirInscripcion,
                 int cantidadStands, TipoUbicacion tipoUbicacion) {
-        super(nombre, fechaInicio, duracionEstimada, ubicacion, capacidadMaxima, costoBase);
-        this.cantidadStands = cantidadStands;
-        this.tipoUbicacion = tipoUbicacion;
+        super(nombre, fechaInicio, duracionEstimada, estadoEvento, permitirInscripcion);
+        setCantidadStands(cantidadStands);
+        setTipoUbicacion(tipoUbicacion);
     }
     
     public int getCantidadStands() {
@@ -57,18 +57,9 @@ public class Feria extends Evento {
     }
     
     @Override
-    public double calcularCostoTotal() {
-        double costoBase = getCostoBase();
-        // El costo adicional depende del número de stands y del tipo de ubicación
-        double costoStands = 500.0 * cantidadStands;
-        double costoUbicacion = (tipoUbicacion == TipoUbicacion.TECHADO) ? 10000.0 : 5000.0;
-        return costoBase + costoStands + costoUbicacion;
-    }
-    
-    @Override
     public void validarRequisitosEspecificos() {
         // Para ferias, la cantidad de stands no puede ser mayor que la capacidad del lugar
-        if (cantidadStands > getCapacidadMaxima() / 10) { // Asumimos que cada stand ocupa espacio para 10 personas
+        if (cantidadStands > 100) { // Asumimos que cada stand ocupa espacio para 10 personas
             throw new IllegalStateException("La cantidad de stands excede la capacidad del lugar");
         }
     }

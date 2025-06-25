@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="650.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" 
+            stylesheets="@/css/eventos/styles-formularioevento.css" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.gestioneventos.controller.eventos.FormularioEventoController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lblTitulo" styleClass="titulo-formulario" text="Nuevo Evento">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" BorderPane.alignment="CENTER">
+         <content>
+            <VBox spacing="15.0">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+               </padding>
+               <children>
+                  <!-- SECCIÓN: DATOS GENERALES -->
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label styleClass="section-header" text="Datos Generales del Evento">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        
+                        <!-- Grilla de datos generales -->
+                        <GridPane hgap="15.0" styleClass="grid-section" vgap="15.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <!-- Tipo de Evento -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label text="Tipo de Evento:" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              <ComboBox fx:id="cmbTipoEvento" prefWidth="250.0" GridPane.columnIndex="1" />
+                              
+                              <!-- Nombre -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label text="Nombre:" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              
+                              <!-- Fecha -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <Label text="Fecha de inicio:" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              <DatePicker fx:id="dpFechaInicio" prefHeight="30.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              
+                              <!-- Duración -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="3">
+                                 <children>
+                                    <Label text="Duración (días):" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="txtDuracionEstimada" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              
+                              <!-- Estado -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="4">
+                                 <children>
+                                    <Label text="Estado:" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              <ComboBox fx:id="cmbEstadoEvento" prefHeight="30.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              
+                              <!-- Permite inscripción -->
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="5">
+                                 <children>
+                                    <Label text="¿Permite Inscripción?" />
+                                 </children>
+                              </HBox>
+                              <CheckBox fx:id="chkPermiteInscripcion" mnemonicParsing="false" text="Sí" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  
+                  <Separator />
+                  
+                  <!-- SECCIÓN: ORGANIZADORES -->
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label styleClass="section-header" text="Organizadores">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        
+                        <VBox spacing="10.0" styleClass="grid-section">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label text="Seleccionar organizador:" />
+                                    <Label styleClass="campo-obligatorio" text="*" />
+                                 </children>
+                              </HBox>
+                              
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ComboBox fx:id="cmbPersonas" prefHeight="30.0" prefWidth="350.0" promptText="Seleccione una persona" />
+                                    <Button fx:id="btnAgregarOrganizador" onAction="#agregarOrganizador" styleClass="btn-secondary" text="Agregar" />
+                                 </children>
+                              </HBox>
+                              
+                              <Label text="Organizadores seleccionados:" />
+                              
+                              <!-- TableView para organizadores seleccionados -->
+                              <TableView fx:id="tablaOrganizadores" prefHeight="150.0">
+                                 <columns>
+                                    <TableColumn fx:id="colNombre" prefWidth="150.0" text="Nombre" />
+                                    <TableColumn fx:id="colApellido" prefWidth="150.0" text="Apellido" />
+                                    <TableColumn fx:id="colDni" prefWidth="100.0" text="DNI" />
+                                    <TableColumn fx:id="colAccion" prefWidth="100.0" text="Acción" />
+                                 </columns>
+                              </TableView>
+                              
+                              <Label fx:id="lblOrganizadoresInfo" styleClass="info-text" text="Debe seleccionar al menos un organizador" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <Separator />
+                  
+                  <!-- DATOS ESPECÍFICOS SEGÚN TIPO -->
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label styleClass="section-header" text="Datos Específicos">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        
+                        <VBox fx:id="contenedorTiposEvento" spacing="10.0">
+                           <!-- GridPane para Cine -->
+                           <GridPane fx:id="gridCine" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Label text="Orden de Proyección:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <TextField fx:id="txtOrdenProyeccion" GridPane.columnIndex="1" />
+                                 
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                                    <children>
+                                       <Label text="Título de Película:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <TextField fx:id="txtTituloPelicula" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              </children>
+                              <padding>
+                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              </padding>
+                           </GridPane>
+                           
+                           <!-- GridPane para Taller -->
+                           <GridPane fx:id="gridTaller" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Label text="Cupo Máximo:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <TextField fx:id="txtCupoMaximo" GridPane.columnIndex="1" />
+                                 
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                                    <children>
+                                       <Label text="Modalidad:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <ComboBox fx:id="cmbModalidad" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              </children>
+                              <padding>
+                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              </padding>
+                           </GridPane>
+                           
+                           <!-- Otros GridPane para tipos específicos... -->
+                           <!-- GridPane para Concierto -->
+                           <GridPane fx:id="gridConcierto" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Label text="Artista Principal:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <TextField fx:id="txtArtistaPrincipal" GridPane.columnIndex="1" />
+                                 
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                                    <children>
+                                       <Label text="Tipo de Entrada:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <ComboBox fx:id="cmbTipoEntrada" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              </children>
+                              <padding>
+                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              </padding>
+                           </GridPane>
+                           
+                           <!-- GridPane para Exposición -->
+                           <GridPane fx:id="gridExposicion" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Label text="Tipo de Arte:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <ComboBox fx:id="cmbTipoArte" prefWidth="250.0" GridPane.columnIndex="1" />
+                              </children>
+                              <padding>
+                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              </padding>
+                           </GridPane>
+                           
+                           <!-- GridPane para Feria -->
+                           <GridPane fx:id="gridFeria" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                              </rowConstraints>
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Label text="Cantidad de Stands:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <TextField fx:id="txtCantidadStands" GridPane.columnIndex="1" />
+                                 
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                                    <children>
+                                       <Label text="Tipo de Ubicación:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <ComboBox fx:id="cmbTipoUbicacion" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              </children>
+                              <padding>
+                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                              </padding>
+                           </GridPane>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lblError" styleClass="error-label" textFill="RED" HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardar" styleClass="btn-primary" text="Guardar" />
+            <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

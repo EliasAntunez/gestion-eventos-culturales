@@ -1,13 +1,33 @@
 package com.gestioneventos.model.participaciones;
 
 /**
- * Enum que define los posibles roles de una persona en un evento
+ * Representa los posibles roles que una persona puede tener en un evento.
  */
 public enum RolParticipacion {
-    ASISTENTE,
-    ORGANIZADOR,
-    ARTISTA,
-    EXPOSITOR,
-    STAFF,
-    INVITADO_ESPECIAL
+    INSTRUCTOR("Instructor"),
+    
+    ORGANIZADOR("Organizador"),
+    
+    PARTICIPANTE("Participante"),
+
+    ARTISTA("Artista"),
+    
+    CURADOR("Curador"),
+    
+    PRESENTADOR("Presentador");
+    
+    private final String descripcion;
+    
+    RolParticipacion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    
+    public String getDescripcion() {
+        return descripcion;
+    }
+    
+    @Override
+    public String toString() {
+        return this.descripcion;
+    }
 }

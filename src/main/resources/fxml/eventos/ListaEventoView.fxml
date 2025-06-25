@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/eventos/styles-listaeventos.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.eventos.ListaEventosController">
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" 
+            stylesheets="@/css/eventos/styles-listaeventos.css" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.gestioneventos.controller.eventos.ListaEventosController">
     <top>
         <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-                <!-- Flecha y título en la misma fila -->
-                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="titulo-personas">
+                <!-- Título -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="titulo-eventos">
                     <children>
-                        <Button fx:id="btnVolver" mnemonicParsing="false" text="← Volver"/>
                         <Label fx:id="labelGestion" text="Gestión de Eventos">
                             <font>
                                 <Font name="System Bold" size="18.0" />
@@ -26,46 +22,82 @@
                         </Label>
                     </children>
                 </HBox>
-                <!-- Barra de búsqueda -->
-                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                
+                <!-- Panel de filtros -->
+                <GridPane hgap="10.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" prefWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" prefWidth="200.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
                     <children>
-                        <TextField fx:id="txtBuscar" promptText="Buscar por nombre, fecha o lugar" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnBuscar" mnemonicParsing="false" text="Buscar" />
+                        <!-- Primera fila -->
+                        <Label text="Nombre:" />
+                        <TextField fx:id="txtFiltroNombre" promptText="Buscar por nombre" GridPane.columnIndex="1" />
+                        <Label text="Tipo:" GridPane.columnIndex="2" />
+                        <ComboBox fx:id="cmbFiltroTipo" prefWidth="150.0" GridPane.columnIndex="3" />
+                        
+                        <!-- Segunda fila -->
+                        <Label text="Estado:" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="cmbFiltroEstado" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        
+                        <Label text="Fecha desde:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <DatePicker fx:id="dpFiltroFechaDesde" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        
+                        <!-- Tercera fila -->
+                        <Label text="Fecha hasta:" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="dpFiltroFechaHasta" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                            <children>
+                                <Button fx:id="btnLimpiarFiltros" mnemonicParsing="false" text="Limpiar" />
+                                <Button fx:id="btnAplicarFiltros" mnemonicParsing="false" text="Aplicar" />
+                                <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#buscarEventos" text="Buscar" />
+                            </children>
+                        </HBox>
                     </children>
-                </HBox>
+                </GridPane>
             </children>
             <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </BorderPane.margin>
         </VBox>
     </top>
     <center>
         <!-- Tabla de eventos -->
-        <TableView fx:id="tablaEventos" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-            <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
-            <TableColumn fx:id="colNombre" prefWidth="120.0" text="Nombre" />
-            <TableColumn fx:id="colFecha" prefWidth="100.0" text="Fecha" />
-            <TableColumn fx:id="colLugar" prefWidth="120.0" text="Lugar" />
-            <TableColumn fx:id="colTipo" prefWidth="100.0" text="Tipo" />
-            <TableColumn fx:id="colOrganizador" prefWidth="120.0" text="Organizador" />
-            <TableColumn fx:id="colEstado" prefWidth="80.0" text="Estado" />
-        </columns>
-        <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-        </BorderPane.margin>
-        <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-        </columnResizePolicy>
+        <TableView fx:id="tablaEventos" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="colNombre" prefWidth="120.0" text="Nombre" />
+                <TableColumn fx:id="colTipoEvento" prefWidth="100.0" text="Tipo" />
+                <TableColumn fx:id="colFechaInicio" prefWidth="100.0" text="Fecha" />
+                <TableColumn fx:id="colDuracion" prefWidth="80.0" text="Duración" />
+                <TableColumn fx:id="colEstado" prefWidth="100.0" text="Estado" />
+                <TableColumn fx:id="colPermiteInscripcion" prefWidth="80.0" text="Inscripción" />
+                <TableColumn fx:id="colDetalle" prefWidth="150.0" text="Detalle" />
+            </columns>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
         </TableView>
     </center>
     <bottom>
         <!-- Barra inferior con botones de acción -->
         <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="btnNuevo" mnemonicParsing="false" text="Nuevo Evento" />
-                <Button fx:id="btnEditar" mnemonicParsing="false" text="Editar" />
-                <Button fx:id="btnEliminar" mnemonicParsing="false" text="Eliminar" />
+                <Button fx:id="btnNuevo" mnemonicParsing="false" onAction="#nuevoEvento" text="Nuevo Evento" />
+                <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#editarEvento" text="Editar" />
+                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#eliminarEvento" text="Eliminar" />
+                <Button fx:id="btnVerParticipantes" mnemonicParsing="false" onAction="#verParticipantes" text="Ver Participantes" />
             </children>
             <BorderPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

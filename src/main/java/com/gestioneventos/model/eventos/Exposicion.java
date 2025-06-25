@@ -18,10 +18,10 @@ public class Exposicion extends Evento {
     
     // Constructor con los atributos específicos
     public Exposicion(String nombre, LocalDate fechaInicio, int duracionEstimada,
-                    String ubicacion, int capacidadMaxima, double costoBase,
+                    EstadoEvento estadoEvento, boolean permitirInscripcion,
                     TipoArte tipoArte) {
-        super(nombre, fechaInicio, duracionEstimada, ubicacion, capacidadMaxima, costoBase);
-        this.tipoArte = tipoArte;
+        super(nombre, fechaInicio, duracionEstimada, estadoEvento, permitirInscripcion);
+        setTipoArte(tipoArte);
     }
     
     public TipoArte getTipoArte() {
@@ -38,14 +38,6 @@ public class Exposicion extends Evento {
     @Override
     public String obtenerDescripcionEspecifica() {
         return "Exposición de " + tipoArte.toString().toLowerCase() + ": " + getNombre();
-    }
-    
-    @Override
-    public double calcularCostoTotal() {
-        double costoBase = getCostoBase();
-        // Las exposiciones tienen costos adicionales para montaje
-        double costoMontaje = 5000.0;
-        return costoBase + costoMontaje;
     }
     
     @Override

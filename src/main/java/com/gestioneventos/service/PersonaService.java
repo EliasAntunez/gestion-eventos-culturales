@@ -1,66 +1,57 @@
-// c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\service\PersonaService.java
 package com.gestioneventos.service;
 
 import com.gestioneventos.model.personas.Persona;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Interfaz del servicio para la gestión de personas.
- * Define las operaciones de negocio relacionadas con la entidad Persona.
- */
 public interface PersonaService {
     
     /**
-     * Guarda o actualiza una persona.
-     * Si la persona tiene un ID, actualiza; de lo contrario, crea una nueva.
+     * Guarda una nueva persona o actualiza una existente.
      * @param persona Persona a guardar o actualizar
-     * @return Persona guardada o actualizada
-     * @throws IllegalArgumentException Si la persona tiene datos inválidos
+     * @return La persona guardada con su ID asignado
      */
     Persona guardar(Persona persona);
     
     /**
-     * Obtiene todas las personas ordenadas por apellido y nombre.
-     * @return Lista de personas
-     */
-    List<Persona> obtenerTodos();
-    
-    /**
      * Busca una persona por su ID.
-     * @param id ID de la persona
-     * @return Optional con la persona si existe, o vacío si no
+     * @param id ID de la persona a buscar
+     * @return Optional con la persona si es encontrada, o vacío si no existe
      */
-    Optional<Persona> obtenerPorId(Long id);
+    Optional<Persona> buscarPorId(Long id);
     
     /**
-     * Busca una persona por su DNI.
-     * @param dni DNI a buscar
-     * @return Optional con la persona si existe, o vacío si no
+     * Obtiene todas las personas.
+     * @return Lista con todas las personas
      */
-    Optional<Persona> obtenerPorDni(String dni);
+    List<Persona> buscarTodas();
     
     /**
-     * Busca personas por nombre o apellido (búsqueda parcial).
-     * Si el texto está vacío, devuelve todas las personas.
-     * @param texto Texto para buscar en nombre o apellido
-     * @return Lista de personas que coinciden con la búsqueda
+     * Busca personas por coincidencia en nombre o apellido.
+     * @param texto Texto a buscar en nombre o apellido
+     * @return Lista de personas que coinciden con el criterio
      */
     List<Persona> buscar(String texto);
     
     /**
-     * Elimina una persona por su ID.
-     * @param id ID de la persona a eliminar
-     * @return true si se eliminó correctamente, false si no existía
+     * Busca una persona por su DNI.
+     * @param dni DNI a buscar
+     * @return Optional con la persona si es encontrada, o vacío si no existe
      */
-    boolean eliminar(Long id);
+    Optional<Persona> buscarPorDni(String dni);
     
     /**
-     * Verifica si una persona con el DNI especificado ya existe.
-     * Útil para validar que no existan DNIs duplicados al crear o actualizar.
+     * Verifica si existe un DNI duplicado excluyendo a la persona con el ID proporcionado.
      * @param dni DNI a verificar
-     * @param idExcluido ID de persona a excluir de la verificación (útil para actualización)
-     * @return true si existe otra persona con el mismo DNI, false en caso contrario
+     * @param idExcluir ID de la persona a excluir de la verificación
+     * @return true si existe un DNI duplicado, false en caso contrario
      */
-    boolean existeDniDuplicado(String dni, Long idExcluido);
+    boolean existeDniDuplicado(String dni, Long idExcluir);
+    
+    /**
+     * Elimina una persona por su ID.
+     * @param id ID de la persona a eliminar
+     * @return true si la persona fue eliminada, false si no existía
+     */
+    boolean eliminar(Long id);
 }

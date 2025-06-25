@@ -249,4 +249,20 @@ public class PersonaDAOImpl implements PersonaDAO {
             em.close();
         }
     }
+
+    /**
+     * Busca personas según el texto proporcionado.
+     * Si el texto está vacío, retorna todas las personas.
+     * @param texto Texto para buscar en nombre o apellido
+     * @return Lista de personas que coinciden con la búsqueda
+     */
+    public List<Persona> buscar(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return findAll(); // Si no hay texto de búsqueda, retorna todas las personas
+        }
+        return findByNombreOrApellido(texto);
+    }
+    
+
+    //
 }

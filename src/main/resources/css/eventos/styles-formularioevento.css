@@ -1,0 +1,176 @@
+/* === ESTILOS PARA EL FORMULARIO DE EVENTOS === */
+.root {
+    -fx-font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    -fx-background-color: #f0f4f8;
+    background-color: #f0f4f8;
+}
+
+/* Botones */
+.button {
+    -fx-background-color: #57585a;
+    background-color: #57585a;
+    -fx-text-fill: #fff;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    padding: 8px 16px;
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-cursor: hand;
+    cursor: pointer;
+}
+
+/* Título */
+.titulo-formulario {
+    -fx-font-size: 18px;
+    font-size: 18px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #3a506b;
+}
+
+#btnGuardar {
+    -fx-background-color: #26a103;
+    background-color: #26a103;
+    -fx-text-fill: #fff;
+}
+
+#btnGuardar:hover {
+    -fx-background-color: #5bd33a;
+    background-color: #5bd33a;
+    -fx-text-fill: #000000;
+}
+
+#btnCancelar {
+    -fx-background-color: #ef476f;
+    background-color: #ef476f;
+    -fx-text-fill: #fff;
+}
+
+#btnCancelar:hover {
+    -fx-background-color: #d90429;
+    background-color: #d90429;
+    -fx-text-fill: #000000;
+}
+
+#btnAgregarOrganizador {
+    -fx-background-color: #4e9af1;
+    background-color: #4e9af1;
+    -fx-text-fill: #fff;
+}
+
+#btnAgregarOrganizador:hover {
+    -fx-background-color: #3a7bc8;
+    background-color: #3a7bc8;
+}
+
+/* TextField */
+.text-field {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+    -fx-padding: 6px 10px;
+    padding: 6px 10px;
+    -fx-font-size: 14px;
+    font-size: 14px;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+    -fx-padding: 4px;
+    padding: 4px;
+}
+
+.date-picker {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+}
+
+/* Campo obligatorio */
+.campo-obligatorio {
+    -fx-text-fill: #d90429;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Mensaje de error */
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Secciones */
+.section-header {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #3a506b;
+    -fx-padding: 5px 0 8px 0;
+    padding: 5px 0 8px 0;
+}
+
+.grid-section {
+    -fx-background-color: #f8f9fa;
+    background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+}
+
+/* Tabla */
+.table-view {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #3a506b;
+    background-color: #3a506b;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #f0f4f8;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Info text */
+.info-text {
+    -fx-font-size: 12px;
+    font-size: 12px;
+    -fx-text-fill: #d90429;
+}
+
+/* Scroll pane - quitar borde */
+.scroll-pane {
+    -fx-background-color: transparent;
+    background-color: transparent;
+    -fx-border-color: transparent;
+    border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    background-color: transparent;
+}

@@ -1,4 +1,3 @@
-// c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\service\impl\PersonaServiceImpl.java
 package com.gestioneventos.service.impl;
 
 import com.gestioneventos.dao.PersonaDAO;
@@ -10,154 +9,127 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del servicio para gestionar personas.
- * Actúa como intermediario entre los controladores y el DAO.
+ * Implementación del servicio de personas.
  */
 public class PersonaServiceImpl implements PersonaService {
-    
-    // Referencia al DAO para operaciones de base de datos
-    private final PersonaDAO personaDAO;
 
-    /**
-     * Constructor que inicializa el DAO para operaciones de persistencia.
-     */
+    private final PersonaDAO personaDAO;
+    
     public PersonaServiceImpl() {
-        // Instanciamos la implementación concreta del DAO
         this.personaDAO = new PersonaDAOImpl();
     }
+    
+    public PersonaServiceImpl(PersonaDAO personaDAO) {
+        this.personaDAO = personaDAO;
+    }
 
-    /**
-     * Guarda o actualiza una persona después de validar sus datos.
-     * @param persona Persona a guardar o actualizar
-     * @return Persona guardada o actualizada
-     * @throws IllegalArgumentException Si la validación falla
-     */
     @Override
     public Persona guardar(Persona persona) {
-        // Validaciones adicionales antes de guardar
-        validarPersona(persona);
-        
-        // Verificar si es una actualización o un nuevo registro
-        if (persona.getId() != null) {
-            // Si tiene ID, actualizamos
-            return personaDAO.update(persona);
-        } else {
-            // Si no tiene ID, creamos nuevo
-            return personaDAO.save(persona);
-        }
-    }
-
-    /**
-     * Obtiene todas las personas.
-     * @return Lista de todas las personas
-     */
-    @Override
-    public List<Persona> obtenerTodos() {
-        return personaDAO.findAll();
-    }
-
-    /**
-     * Busca una persona por su ID.
-     * @param id ID de la persona
-     * @return Optional con la persona si existe
-     */
-    @Override
-    public Optional<Persona> obtenerPorId(Long id) {
-        return personaDAO.findById(id);
-    }
-
-    /**
-     * Busca una persona por su DNI.
-     * @param dni DNI a buscar
-     * @return Optional con la persona si existe
-     */
-    @Override
-    public Optional<Persona> obtenerPorDni(String dni) {
-        return personaDAO.findByDni(dni);
-    }
-
-    /**
-     * Busca personas por nombre o apellido.
-     * Si el texto está vacío, devuelve todas las personas.
-     * @param texto Texto para buscar en nombre o apellido
-     * @return Lista de personas que coinciden
-     */
-    @Override
-    public List<Persona> buscar(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            // Si no hay texto de búsqueda, devolvemos todas
-            return obtenerTodos();
-        }
-        // Si hay texto, realizamos la búsqueda filtrada
-        return personaDAO.findByNombreOrApellido(texto);
-    }
-
-    /**
-     * Elimina una persona por su ID.
-     * @param id ID de la persona a eliminar
-     * @return true si se eliminó, false si no existía
-     */
-    @Override
-    public boolean eliminar(Long id) {
-        // Primero verificamos que exista
-        if (!personaDAO.existsById(id)) {
-            return false;
-        }
-        // Si existe, la eliminamos
-        personaDAO.deleteById(id);
-        return true;
-    }
-
-    /**
-     * Verifica si ya existe otra persona con el mismo DNI.
-     * @param dni DNI a verificar
-     * @param idExcluido ID de persona a excluir (para actualización)
-     * @return true si existe duplicado, false en caso contrario
-     */
-    @Override
-    public boolean existeDniDuplicado(String dni, Long idExcluido) {
-        // Buscamos si existe una persona con ese DNI
-        Optional<Persona> personaExistente = personaDAO.findByDni(dni);
-        
-        // Si no existe ninguna, no hay duplicado
-        if (personaExistente.isEmpty()) {
-            return false;
-        }
-        
-        // Si encontró una persona con ese DNI, verificamos si es la misma que estamos editando
-        // Si idExcluido es null o diferente al ID encontrado, significa que hay duplicado
-        return idExcluido == null || !personaExistente.get().getId().equals(idExcluido);
-    }
-    
-    /**
-     * Valida que los datos de la persona sean correctos.
-     * @param persona Persona a validar
-     * @throws IllegalArgumentException Si la validación falla
-     */
-    private void validarPersona(Persona persona) {
-        // Verificamos que la persona no sea nula
         if (persona == null) {
             throw new IllegalArgumentException("La persona no puede ser nula");
         }
         
-        // Validar el nombre
+        // Validar campos obligatorios
+        validarPersona(persona);
+        
+        // Verificar si DNI ya existe (en caso de nueva persona)
+        if (persona.getId() == null) {
+            Optional<Persona> existente = buscarPorDni(persona.getDni());
+            if (existente.isPresent()) {
+                throw new IllegalArgumentException("Ya existe una persona con el DNI: " + persona.getDni());
+            }
+        }
+        
+        return persona.getId() == null ? personaDAO.save(persona) : personaDAO.update(persona);
+    }
+
+    @Override
+    public Optional<Persona> buscarPorId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
+        }
+        return personaDAO.findById(id);
+    }
+
+    @Override
+    public List<Persona> buscarTodas() {
+        return personaDAO.findAll();
+    }
+
+    public List<Persona> buscarPorNombreOApellido(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new IllegalArgumentException("El texto de búsqueda no puede ser nulo o vacío");
+        }
+        return personaDAO.findByNombreOrApellido(texto);
+    }
+
+    // Implementación del método buscar de la interfaz
+    @Override
+    public List<Persona> buscar(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return buscarTodas(); // Si no hay texto de búsqueda, retorna todas las personas
+        }
+        return personaDAO.findByNombreOrApellido(texto);
+    }
+
+    @Override
+    public Optional<Persona> buscarPorDni(String dni) {
+        if (dni == null || dni.trim().isEmpty()) {
+            throw new IllegalArgumentException("El DNI no puede ser nulo o vacío");
+        }
+        return personaDAO.findByDni(dni);
+    }
+
+    @Override
+    public boolean eliminar(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
+        }
+        
+        if (!personaDAO.existsById(id)) {
+            return false;
+        }
+        
+        personaDAO.deleteById(id);
+        return true;
+    }
+
+    // Implementación del método existeDniDuplicado
+    @Override
+    public boolean existeDniDuplicado(String dni, Long idExcluir) {
+        if (dni == null || dni.trim().isEmpty()) {
+            throw new IllegalArgumentException("El DNI no puede ser nulo o vacío");
+        }
+        
+        // Buscar persona con ese DNI
+        Optional<Persona> personaEncontrada = buscarPorDni(dni);
+        
+        // Si no hay persona con ese DNI, no hay duplicado
+        if (personaEncontrada.isEmpty()) {
+            return false;
+        }
+        
+        // Si hay persona con ese DNI, verificar si es la misma que estamos excluyendo
+        Persona persona = personaEncontrada.get();
+        return !persona.getId().equals(idExcluir);
+    }
+
+    /**
+     * Valida que los campos obligatorios de la persona estén presentes.
+     */
+    private void validarPersona(Persona persona) {
         if (persona.getNombre() == null || persona.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío");
+            throw new IllegalArgumentException("El nombre de la persona es obligatorio");
         }
         
-        // Validar el apellido
         if (persona.getApellido() == null || persona.getApellido().trim().isEmpty()) {
-            throw new IllegalArgumentException("El apellido no puede estar vacío");
+            throw new IllegalArgumentException("El apellido de la persona es obligatorio");
         }
         
-        // Validar el DNI
         if (persona.getDni() == null || persona.getDni().trim().isEmpty()) {
-            throw new IllegalArgumentException("El DNI no puede estar vacío");
-        }
-        
-        // Verificar DNI duplicado (solo si no es la misma persona)
-        if (existeDniDuplicado(persona.getDni(), persona.getId())) {
-            throw new IllegalArgumentException("Ya existe una persona con el DNI: " + persona.getDni());
+            throw new IllegalArgumentException("El DNI de la persona es obligatorio");
         }
     }
+
+    
 }
