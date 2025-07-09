@@ -2,8 +2,7 @@
 package com.gestioneventos.controller.personas;
 
 import com.gestioneventos.model.personas.Persona;
-import com.gestioneventos.service.PersonaService;
-import com.gestioneventos.service.impl.PersonaServiceImpl;
+import com.gestioneventos.service.ServicioPersona;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,7 +53,7 @@ public class FormularioPersonaController implements Initializable {
     
     // Variables de estado
     private Persona persona; // Persona que se está editando (null si es nueva)
-    private final PersonaService personaService; // Servicio para operaciones con personas
+    private final ServicioPersona personaService; // Servicio para operaciones con personas
     private ListaPersonasController listaPersonasController; // Referencia al controlador de la lista
     private boolean esEdicion = false; // Indica si estamos en modo edición o creación
     
@@ -62,7 +61,7 @@ public class FormularioPersonaController implements Initializable {
      * Constructor que inicializa el servicio.
      */
     public FormularioPersonaController() {
-        this.personaService = new PersonaServiceImpl();
+        this.personaService = new ServicioPersona();
     }
     
     /**
@@ -122,6 +121,7 @@ public class FormularioPersonaController implements Initializable {
                 if (!esEdicion) {
                     // Si es una nueva persona, la creamos con los datos del formulario
                     persona = new Persona(
+                            // Obtenemos los datos de los campos del formulario
                             txtNombre.getText().trim(),
                             txtApellido.getText().trim(),
                             txtDni.getText().trim(),

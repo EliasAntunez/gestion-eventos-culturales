@@ -9,10 +9,8 @@ import com.gestioneventos.model.eventos.Feria;
 import com.gestioneventos.model.participaciones.Participacion;
 import com.gestioneventos.model.participaciones.RolParticipacion;
 import com.gestioneventos.model.personas.Persona;
-import com.gestioneventos.service.ParticipacionService;
-import com.gestioneventos.service.PersonaService;
-import com.gestioneventos.service.impl.ParticipacionServiceImpl;
-import com.gestioneventos.service.impl.PersonaServiceImpl;
+import com.gestioneventos.service.ServicioParticipacion;
+import com.gestioneventos.service.ServicioPersona;
 import com.gestioneventos.util.DateUtils;
 
 import javafx.collections.FXCollections;
@@ -65,8 +63,8 @@ public class FormularioParticipacionesController implements Initializable {
     private ObservableList<Persona> personasObservables = FXCollections.observableArrayList();
     
     // Servicios
-    private final PersonaService personaService;
-    private final ParticipacionService participacionService;
+    private final ServicioPersona personaService;
+    private final ServicioParticipacion participacionService;
     
     // Controlador para actualizar después de agregar participantes
     private ListaParticipacionesController listaController;
@@ -75,8 +73,8 @@ public class FormularioParticipacionesController implements Initializable {
      * Constructor que inicializa los servicios.
      */
     public FormularioParticipacionesController() {
-        this.personaService = new PersonaServiceImpl();
-        this.participacionService = new ParticipacionServiceImpl();
+        this.personaService = new ServicioPersona();
+        this.participacionService = new ServicioParticipacion();
     }
 
     /**

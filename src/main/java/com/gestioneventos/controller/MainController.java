@@ -121,24 +121,6 @@ private void gestionarEventos(ActionEvent event) {
 }
 
     @FXML
-    private void nuevaPersona(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/FormularioPersonaView.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Nueva Persona");
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error al abrir el formulario de personas", e.getMessage());
-        }
-    }
-
-    @FXML
     private void gestionarPersonas(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/ListaPersonasView.fxml"));

@@ -4,10 +4,7 @@ import com.gestioneventos.model.eventos.Evento;
 import com.gestioneventos.model.participaciones.Participacion;
 import com.gestioneventos.model.participaciones.RolParticipacion;
 import com.gestioneventos.model.personas.Persona;
-import com.gestioneventos.service.ParticipacionService;
-//import com.gestioneventos.service.PersonaService;
-import com.gestioneventos.service.impl.ParticipacionServiceImpl;
-//import com.gestioneventos.service.impl.PersonaServiceImpl;
+import com.gestioneventos.service.ServicioParticipacion;
 import com.gestioneventos.util.DateUtils;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -60,7 +57,7 @@ public class ListaParticipacionesController implements Initializable {
     @FXML private Button btnCerrar;
     
     // Servicios
-    private final ParticipacionService participacionService;
+    private final ServicioParticipacion participacionService;
     //private final PersonaService personaService;
     
     // Datos
@@ -71,7 +68,7 @@ public class ListaParticipacionesController implements Initializable {
      * Constructor que inicializa los servicios.
      */
     public ListaParticipacionesController() {
-        this.participacionService = new ParticipacionServiceImpl();
+        this.participacionService = new ServicioParticipacion();
         //this.personaService = new PersonaServiceImpl();
         this.participacionesObservables = FXCollections.observableArrayList();
     }

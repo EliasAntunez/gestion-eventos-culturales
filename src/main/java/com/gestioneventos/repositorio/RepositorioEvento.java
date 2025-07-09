@@ -1,7 +1,6 @@
-package com.gestioneventos.dao.impl;
+package com.gestioneventos.repositorio;
 
 import com.gestioneventos.model.eventos.Evento;
-import com.gestioneventos.dao.EventoDAO;
 import com.gestioneventos.model.eventos.EstadoEvento;
 import com.gestioneventos.util.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -12,18 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del DAO para la entidad Evento.
+ * Repositorio para operaciones con la entidad Evento.
+ * Maneja el acceso a datos para la entidad Evento.
  */
-public class EventoDAOImpl implements EventoDAO {
+public class RepositorioEvento {
 
-    @Override
-    public Evento save(Evento entity) {
+    /**
+     * Guarda un nuevo evento en la base de datos.
+     * @param evento El evento a guardar
+     * @return El evento guardado con su ID generado
+     */
+    public Evento guardar(Evento evento) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(entity);
+            em.persist(evento);
             em.getTransaction().commit();
-            return entity;
+            return evento;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
@@ -34,12 +38,16 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public Evento update(Evento entity) {
+    /**
+     * Actualiza un evento existente.
+     * @param evento El evento a actualizar
+     * @return El evento actualizado
+     */
+    public Evento actualizar(Evento evento) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            Evento mergedEvento = em.merge(entity);
+            Evento mergedEvento = em.merge(evento);
             em.getTransaction().commit();
             return mergedEvento;
         } catch (Exception e) {
@@ -52,8 +60,21 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public Optional<Evento> findById(Long id) {
+    /**
+     * Guarda o actualiza un evento dependiendo si tiene id o no.
+     * @param evento El evento a guardar o actualizar
+     * @return El evento guardado o actualizado
+     */
+    public Evento guardarOActualizar(Evento evento) {
+        return evento.getId() == null ? guardar(evento) : actualizar(evento);
+    }
+
+    /**
+     * Busca un evento por su ID.
+     * @param id ID del evento a buscar
+     * @return Optional con el evento si existe
+     */
+    public Optional<Evento> buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             Evento evento = em.find(Evento.class, id);
@@ -63,8 +84,11 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findAll() {
+    /**
+     * Obtiene todos los eventos ordenados por fecha de inicio.
+     * @return Lista de todos los eventos
+     */
+    public List<Evento> buscarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Evento> query = em.createQuery(
@@ -77,18 +101,21 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public void delete(Evento entity) {
+    /**
+     * Elimina un evento de la base de datos.
+     * @param evento El evento a eliminar
+     */
+    public void eliminar(Evento evento) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            if (!em.contains(entity)) {
-                entity = em.find(Evento.class, entity.getId());
-                if (entity == null) {
+            if (!em.contains(evento)) {
+                evento = em.find(Evento.class, evento.getId());
+                if (evento == null) {
                     return; // No existe, no hacemos nada
                 }
             }
-            em.remove(entity);
+            em.remove(evento);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -100,8 +127,11 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public void deleteById(Long id) {
+    /**
+     * Elimina un evento por su ID.
+     * @param id ID del evento a eliminar
+     */
+    public void eliminarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -120,8 +150,12 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public boolean existsById(Long id) {
+    /**
+     * Verifica si existe un evento con el ID proporcionado.
+     * @param id ID a verificar
+     * @return true si el evento existe, false en caso contrario
+     */
+    public boolean existePorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.find(Evento.class, id) != null;
@@ -130,8 +164,11 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public long count() {
+    /**
+     * Cuenta la cantidad total de eventos en la base de datos.
+     * @return Cantidad de eventos
+     */
+    public long contarTotal() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) FROM Evento e", Long.class);
@@ -141,8 +178,12 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findByNombre(String nombre) {
+    /**
+     * Busca eventos por coincidencia parcial en el nombre.
+     * @param nombre Texto a buscar en el nombre del evento
+     * @return Lista de eventos que coinciden con el criterio
+     */
+    public List<Evento> buscarPorNombre(String nombre) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Evento> query = em.createQuery(
@@ -157,8 +198,12 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findByEstado(EstadoEvento estado) {
+    /**
+     * Busca eventos por su estado.
+     * @param estado Estado del evento a buscar
+     * @return Lista de eventos en el estado especificado
+     */
+    public List<Evento> buscarPorEstado(EstadoEvento estado) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Evento> query = em.createQuery(
@@ -173,8 +218,12 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findByFecha(LocalDate fecha) {
+    /**
+     * Busca eventos que ocurren en una fecha específica.
+     * @param fecha Fecha a buscar
+     * @return Lista de eventos que ocurren en esa fecha
+     */
+    public List<Evento> buscarPorFecha(LocalDate fecha) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Buscar eventos que ocurren en la fecha especificada (su fecha de inicio 
@@ -194,8 +243,13 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findByRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+    /**
+     * Busca eventos que se superponen con un rango de fechas.
+     * @param fechaInicio Fecha de inicio del rango
+     * @param fechaFin Fecha de fin del rango
+     * @return Lista de eventos dentro del rango de fechas
+     */
+    public List<Evento> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Buscar eventos que se superponen con el rango de fechas dado
@@ -217,8 +271,12 @@ public class EventoDAOImpl implements EventoDAO {
         }
     }
 
-    @Override
-    public List<Evento> findByParticipanteId(Long personaId) {
+    /**
+     * Busca eventos en los que participa una persona específica.
+     * @param personaId ID de la persona participante
+     * @return Lista de eventos en los que participa la persona
+     */
+    public List<Evento> buscarPorParticipanteId(Long personaId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Evento> query = em.createQuery(
@@ -232,5 +290,17 @@ public class EventoDAOImpl implements EventoDAO {
         } finally {
             em.close();
         }
+    }
+
+    /**
+     * Busca eventos según el texto proporcionado o todos si el texto está vacío.
+     * @param texto Texto para buscar en el nombre del evento
+     * @return Lista de eventos según el criterio de búsqueda
+     */
+    public List<Evento> buscar(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return buscarTodos();
+        }
+        return buscarPorNombre(texto);
     }
 }
