@@ -58,8 +58,6 @@ public class ListaEventosController implements Initializable {
     @FXML private DatePicker dpFiltroFechaDesde;
     @FXML private DatePicker dpFiltroFechaHasta;
     @FXML private ComboBox<String> cmbFiltroTipo;
-    @FXML private Button btnLimpiarFiltros;
-    @FXML private Button btnAplicarFiltros;
     
     // Acciones
     @FXML private Button btnNuevoEvento;
@@ -94,7 +92,11 @@ public class ListaEventosController implements Initializable {
         
         // Configurar selección de la tabla
         configurarSeleccionTabla();
-        
+        // Deshabilitar botones al inicio
+        btnEditarEvento.setDisable(true);
+        btnEliminarEvento.setDisable(true);
+        btnVerParticipantes.setDisable(true);
+
         // Cargar datos iniciales
         cargarEventos();
     }
@@ -179,10 +181,6 @@ public class ListaEventosController implements Initializable {
         // Inicializar fechas
         dpFiltroFechaDesde.setValue(null);
         dpFiltroFechaHasta.setValue(null);
-        
-        // Configurar botones de filtro
-        btnLimpiarFiltros.setOnAction(e -> limpiarFiltros());
-        btnAplicarFiltros.setOnAction(e -> aplicarFiltros());
     }
     
     /**

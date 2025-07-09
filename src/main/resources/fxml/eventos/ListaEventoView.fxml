@@ -56,8 +56,6 @@
                         
                         <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
                             <children>
-                                <Button fx:id="btnLimpiarFiltros" mnemonicParsing="false" text="Limpiar" />
-                                <Button fx:id="btnAplicarFiltros" mnemonicParsing="false" text="Aplicar" />
                                 <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#buscarEventos" text="Buscar" />
                             </children>
                         </HBox>
@@ -94,9 +92,9 @@
         <!-- Barra inferior con botones de acción -->
         <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="btnNuevo" mnemonicParsing="false" onAction="#nuevoEvento" text="Nuevo Evento" />
-                <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#editarEvento" text="Editar" />
-                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#eliminarEvento" text="Eliminar" />
+                <Button fx:id="btnNuevoEvento" mnemonicParsing="false" onAction="#nuevoEvento" text="Nuevo Evento" />
+                <Button fx:id="btnEditarEvento" mnemonicParsing="false" onAction="#editarEvento" text="Editar" />
+                <Button fx:id="btnEliminarEvento" mnemonicParsing="false" onAction="#eliminarEvento" text="Eliminar" />
                 <Button fx:id="btnVerParticipantes" mnemonicParsing="false" onAction="#verParticipantes" text="Ver Participantes" />
             </children>
             <BorderPane.margin>

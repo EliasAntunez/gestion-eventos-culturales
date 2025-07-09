@@ -29,7 +29,7 @@
 }
 
 /* Botones */
-.button, #btnNuevo, #btnEditar, #btnEliminar, #btnBuscar {
+.button, #btnNuevoEvento, #btnEditarEvento, #btnEliminarEvento, #btnVerParticipantes, #btnBuscar {
     -fx-background-color: #57585a;
     background-color: #57585a;
     -fx-text-fill: #fff;
@@ -45,25 +45,25 @@
     -fx-border-color: transparent;
     border-color: transparent;
 }
-.button:hover, #btnNuevo:hover, #btnEditar:hover, #btnEliminar:hover, #btnBuscar:hover {
+.button:hover, #btnNuevoEvento:hover, #btnEditarEvento:hover, #btnEliminarEvento:hover, #btnVerParticipantes:hover, #btnBuscar:hover {
     -fx-background-color: #686b6e;
     background-color: #686b6e;
     -fx-text-fill: #000000;
     color: #000000;
 }
-#btnNuevo {
+#btnNuevoEvento {
     -fx-background-color: #26a103;
     background-color: #26a103;
 }
-#btnNuevo:hover {
+#btnNuevoEvento:hover {
     -fx-background-color: #5bd33a;
     background-color: #5bd33a;
 }
-#btnEliminar {
+#btnEliminarEvento {
     -fx-background-color: #ef476f;
     background-color: #ef476f;
 }
-#btnEliminar:hover {
+#btnEliminarEvento:hover {
     -fx-background-color: #d90429;
     background-color: #d90429;
     -fx-text-fill: #000000;
@@ -77,7 +77,25 @@
     -fx-background-color: #3a7bc8;
     background-color: #3a7bc8;
 }
-
+/* Botones deshabilitados */
+.button:disabled, #btnEditarEvento:disabled, #btnVerParticipantes:disabled {
+    -fx-background-color: #cccccc;
+    background-color: #cccccc;
+    -fx-text-fill: #000000;
+    color: #000000;
+    -fx-cursor: not-allowed;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+#btnEliminarEvento:disabled {
+    -fx-background-color: #ff7070;
+    background-color: #cccccc;
+    -fx-text-fill: #000000;
+    color: #ed8989;
+    -fx-cursor: not-allowed;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
 /* Tabla */
 .table-view {
     -fx-background-color: #fff;

@@ -206,42 +206,65 @@ public class FormularioPersonaController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCampos() {
-        // Validar nombre
-        if (txtNombre.getText() == null || txtNombre.getText().trim().isEmpty()) {
-            lblError.setText("El nombre es obligatorio");
+    // Validar nombre
+    String nombre = txtNombre.getText();
+    if (nombre == null || nombre.trim().isEmpty()) {
+        lblError.setText("El nombre es obligatorio");
+        return false;
+    }
+    if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+        lblError.setText("El nombre solo puede contener letras");
+        return false;
+    }
+
+    // Validar apellido
+    String apellido = txtApellido.getText();
+    if (apellido == null || apellido.trim().isEmpty()) {
+        lblError.setText("El apellido es obligatorio");
+        return false;
+    }
+    if (!apellido.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+        lblError.setText("El apellido solo puede contener letras");
+        return false;
+    }
+
+    // Validar DNI
+    String dni = txtDni.getText();
+    if (dni == null || dni.trim().isEmpty()) {
+        lblError.setText("El DNI es obligatorio");
+        return false;
+    }
+    if (!dni.matches("\\d+")) {
+        lblError.setText("El DNI solo puede contener números");
+        return false;
+    }
+    if (dni.length() < 7 || dni.length() > 8) {
+        lblError.setText("El DNI debe tener 7 u 8 dígitos");
+        return false;
+    }
+
+    // Validar email
+    String email = txtEmail.getText();
+    if (email == null || email.trim().isEmpty()) {
+        lblError.setText("El Email es obligatorio");
+        return false;
+    }
+    if (!email.contains("@")) {
+        lblError.setText("El Email debe contener '@'");
+        return false;
+    }
+
+    // Validar DNI duplicado
+    if (!esEdicion || !dni.equals(persona.getDni())) {
+        Long idExcluido = esEdicion ? persona.getId() : null;
+        if (personaService.existeDniDuplicado(dni, idExcluido)) {
+            lblError.setText("Ya existe una persona con ese DNI");
             return false;
         }
-        
-        // Validar apellido
-        if (txtApellido.getText() == null || txtApellido.getText().trim().isEmpty()) {
-            lblError.setText("El apellido es obligatorio");
-            return false;
-        }
-        
-        // Validar DNI
-        if (txtDni.getText() == null || txtDni.getText().trim().isEmpty()) {
-            lblError.setText("El DNI es obligatorio");
-            return false;
-        }
-        //validar email
-        if (txtEmail.getText() == null || txtEmail.getText().trim().isEmpty()) {
-            lblError.setText("El Email es obligatorio");
-            return false;
-        }
-    
-        
-        // Validar DNI duplicado
-        // Si es edición y el DNI cambió, o si es una nueva persona
-        if (!esEdicion || !txtDni.getText().equals(persona.getDni())) {
-            Long idExcluido = esEdicion ? persona.getId() : null;
-            if (personaService.existeDniDuplicado(txtDni.getText(), idExcluido)) {
-                lblError.setText("Ya existe una persona con ese DNI");
-                return false;
-            }
-        }
-        
-        // Si pasó todas las validaciones
-        return true;
+    }
+
+    // Si pasó todas las validaciones
+    return true;
     }
     
     /**
