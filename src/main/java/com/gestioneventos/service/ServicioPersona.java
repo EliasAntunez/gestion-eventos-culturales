@@ -1,29 +1,37 @@
-package com.gestioneventos.service.impl;
+package com.gestioneventos.service;
 
-import com.gestioneventos.dao.PersonaDAO;
-import com.gestioneventos.dao.impl.PersonaDAOImpl;
 import com.gestioneventos.model.personas.Persona;
-import com.gestioneventos.service.PersonaService;
+import com.gestioneventos.repositorio.RepositorioPersona;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del servicio de personas.
+ * Servicio unificado para la gestión de personas.
  */
-public class PersonaServiceImpl implements PersonaService {
+public class ServicioPersona {
 
-    private final PersonaDAO personaDAO;
+    private final RepositorioPersona repositorioPersona;
     
-    public PersonaServiceImpl() {
-        this.personaDAO = new PersonaDAOImpl();
+    /**
+     * Constructor por defecto.
+     */
+    public ServicioPersona() {
+        this.repositorioPersona = new RepositorioPersona();
     }
     
-    public PersonaServiceImpl(PersonaDAO personaDAO) {
-        this.personaDAO = personaDAO;
+    /**
+     * Constructor para inyección de dependencias (útil para testing).
+     */
+    public ServicioPersona(RepositorioPersona repositorioPersona) {
+        this.repositorioPersona = repositorioPersona;
     }
 
-    @Override
+    /**
+     * Guarda una nueva persona o actualiza una existente.
+     * @param persona Persona a guardar o actualizar
+     * @return La persona guardada con su ID asignado
+     */
     public Persona guardar(Persona persona) {
         if (persona == null) {
             throw new IllegalArgumentException("La persona no puede ser nula");
@@ -40,62 +48,90 @@ public class PersonaServiceImpl implements PersonaService {
             }
         }
         
-        return persona.getId() == null ? personaDAO.save(persona) : personaDAO.update(persona);
+        return persona.getId() == null ? repositorioPersona.guardar(persona) : repositorioPersona.actualizar(persona);
     }
 
-    @Override
+    /**
+     * Busca una persona por su ID.
+     * @param id ID de la persona a buscar
+     * @return Optional con la persona si es encontrada, o vacío si no existe
+     */
     public Optional<Persona> buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
         }
-        return personaDAO.findById(id);
+        return repositorioPersona.buscarPorId(id);
     }
-
-    @Override
+    
+    /**
+     * Obtiene todas las personas.
+     * @return Lista con todas las personas
+     */
     public List<Persona> buscarTodas() {
-        return personaDAO.findAll();
+        return repositorioPersona.buscarTodos();
     }
-
+    
+    /**
+     * Busca personas por coincidencia en nombre o apellido.
+     * @param texto Texto a buscar en nombre o apellido
+     * @return Lista de personas que coinciden con el criterio
+     */
     public List<Persona> buscarPorNombreOApellido(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             throw new IllegalArgumentException("El texto de búsqueda no puede ser nulo o vacío");
         }
-        return personaDAO.findByNombreOrApellido(texto);
+        return repositorioPersona.buscarPorNombreOApellido(texto);
     }
 
-    // Implementación del método buscar de la interfaz
-    @Override
+    /**
+     * Busca personas según el texto proporcionado.
+     * Si el texto está vacío, retorna todas las personas.
+     * @param texto Texto para buscar en nombre o apellido
+     * @return Lista de personas que coinciden con la búsqueda
+     */
     public List<Persona> buscar(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             return buscarTodas(); // Si no hay texto de búsqueda, retorna todas las personas
         }
-        return personaDAO.findByNombreOrApellido(texto);
+        return repositorioPersona.buscarPorNombreOApellido(texto);
     }
-
-    @Override
+    
+    /**
+     * Busca una persona por su DNI.
+     * @param dni DNI a buscar
+     * @return Optional con la persona si es encontrada, o vacío si no existe
+     */
     public Optional<Persona> buscarPorDni(String dni) {
         if (dni == null || dni.trim().isEmpty()) {
             throw new IllegalArgumentException("El DNI no puede ser nulo o vacío");
         }
-        return personaDAO.findByDni(dni);
+        return repositorioPersona.buscarPorDni(dni);
     }
-
-    @Override
+    
+    /**
+     * Elimina una persona por su ID.
+     * @param id ID de la persona a eliminar
+     * @return true si la persona fue eliminada, false si no existía
+     */
     public boolean eliminar(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
         }
         
-        if (!personaDAO.existsById(id)) {
+        if (!repositorioPersona.existePorId(id)) {
             return false;
         }
         
-        personaDAO.deleteById(id);
+        repositorioPersona.eliminarPorId(id);
         return true;
     }
-
-    // Implementación del método existeDniDuplicado
-    @Override
+    
+    /**
+     * Verifica si existe un DNI duplicado excluyendo a la persona con el ID proporcionado.
+     * @param dni DNI a verificar
+     * @param idExcluir ID de la persona a excluir de la verificación
+     * @return true si existe un DNI duplicado, false en caso contrario
+     */
     public boolean existeDniDuplicado(String dni, Long idExcluir) {
         if (dni == null || dni.trim().isEmpty()) {
             throw new IllegalArgumentException("El DNI no puede ser nulo o vacío");
@@ -130,6 +166,4 @@ public class PersonaServiceImpl implements PersonaService {
             throw new IllegalArgumentException("El DNI de la persona es obligatorio");
         }
     }
-
-    
 }

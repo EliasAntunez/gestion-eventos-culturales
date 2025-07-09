@@ -4,12 +4,11 @@ import com.gestioneventos.model.eventos.Evento;
 import com.gestioneventos.controller.participaciones.ListaParticipacionesController;
 import com.gestioneventos.model.eventos.Cine;
 import com.gestioneventos.model.eventos.Taller;
+import com.gestioneventos.service.ServicioEvento;
 import com.gestioneventos.model.eventos.Concierto;
 import com.gestioneventos.model.eventos.Exposicion;
 import com.gestioneventos.model.eventos.Feria;
 import com.gestioneventos.model.eventos.EstadoEvento;
-import com.gestioneventos.service.EventoService;
-import com.gestioneventos.service.impl.EventoServiceImpl;
 import com.gestioneventos.util.DateUtils;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -66,7 +65,7 @@ public class ListaEventosController implements Initializable {
     @FXML private Button btnVerParticipantes;
     
     // Servicio
-    private final EventoService eventoService;
+    private final ServicioEvento eventoService;
     
     // Lista de eventos observable para la tabla
     private ObservableList<Evento> eventosObservable;
@@ -75,7 +74,7 @@ public class ListaEventosController implements Initializable {
      * Constructor que inicializa el servicio.
      */
     public ListaEventosController() {
-        this.eventoService = new EventoServiceImpl();
+        this.eventoService = new ServicioEvento();
         this.eventosObservable = FXCollections.observableArrayList();
     }
 

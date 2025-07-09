@@ -1,7 +1,5 @@
-// c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\dao\impl\PersonaDAOImpl.java
-package com.gestioneventos.dao.impl;
+package com.gestioneventos.repositorio;
 
-import com.gestioneventos.dao.PersonaDAO;
 import com.gestioneventos.model.personas.Persona;
 import com.gestioneventos.util.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -12,28 +10,28 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del DAO para la entidad Persona.
+ * Repositorio para operaciones con la entidad Persona.
+ * Maneja el acceso a datos para la entidad Persona.
  */
-public class PersonaDAOImpl implements PersonaDAO {
+public class RepositorioPersona {
 
     /**
      * Guarda una nueva entidad Persona en la base de datos.
-     * @param entity La persona a guardar
+     * @param persona La persona a guardar
      * @return La persona guardada con su ID generado
      */
-    @Override
-    public Persona save(Persona entity) {
+    public Persona guardar(Persona persona) {
         // Obtener el EntityManager para interactuar con la BD
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Iniciar una transacción de base de datos
             em.getTransaction().begin();
             // Persistir la entidad en la BD
-            em.persist(entity);
+            em.persist(persona);
             // Confirmar la transacción
             em.getTransaction().commit();
             // Devolver la entidad con su ID generado
-            return entity;
+            return persona;
         } catch (Exception e) {
             // Si hay error, revertir la transacción
             if (em.getTransaction().isActive()) {
@@ -49,16 +47,15 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     /**
      * Actualiza una entidad Persona existente.
-     * @param entity La persona a actualizar
+     * @param persona La persona a actualizar
      * @return La persona actualizada
      */
-    @Override
-    public Persona update(Persona entity) {
+    public Persona actualizar(Persona persona) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             // merge sincroniza el estado de la entidad con la BD
-            Persona mergedPersona = em.merge(entity);
+            Persona mergedPersona = em.merge(persona);
             em.getTransaction().commit();
             return mergedPersona;
         } catch (Exception e) {
@@ -72,12 +69,20 @@ public class PersonaDAOImpl implements PersonaDAO {
     }
 
     /**
+     * Guarda o actualiza una persona dependiendo si tiene id o no.
+     * @param persona La persona a guardar o actualizar
+     * @return La persona guardada o actualizada
+     */
+    public Persona guardarOActualizar(Persona persona) {
+        return persona.getId() == null ? guardar(persona) : actualizar(persona);
+    }
+
+    /**
      * Busca una persona por su ID.
      * @param id ID de la persona a buscar
      * @return Optional con la persona si existe
      */
-    @Override
-    public Optional<Persona> findById(Long id) {
+    public Optional<Persona> buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // find busca por clave primaria (ID)
@@ -93,8 +98,7 @@ public class PersonaDAOImpl implements PersonaDAO {
      * Obtiene todas las personas ordenadas por apellido y nombre.
      * @return Lista de todas las personas
      */
-    @Override
-    public List<Persona> findAll() {
+    public List<Persona> buscarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Consulta JPQL para obtener todas las personas ordenadas
@@ -110,23 +114,22 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     /**
      * Elimina una persona de la base de datos.
-     * @param entity La persona a eliminar
+     * @param persona La persona a eliminar
      */
-    @Override
-    public void delete(Persona entity) {
+    public void eliminar(Persona persona) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             // Si la entidad no está gestionada por el EntityManager actual
-            if (!em.contains(entity)) {
+            if (!em.contains(persona)) {
                 // La buscamos para obtener una referencia gestionada
-                entity = em.find(Persona.class, entity.getId());
-                if (entity == null) {
+                persona = em.find(Persona.class, persona.getId());
+                if (persona == null) {
                     return; // No existe, no hacemos nada
                 }
             }
             // Eliminar la entidad de la BD
-            em.remove(entity);
+            em.remove(persona);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -142,8 +145,7 @@ public class PersonaDAOImpl implements PersonaDAO {
      * Elimina una persona por su ID.
      * @param id ID de la persona a eliminar
      */
-    @Override
-    public void deleteById(Long id) {
+    public void eliminarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -169,8 +171,7 @@ public class PersonaDAOImpl implements PersonaDAO {
      * @param id ID a verificar
      * @return true si la persona existe, false en caso contrario
      */
-    @Override
-    public boolean existsById(Long id) {
+    public boolean existePorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Si find devuelve null, la persona no existe
@@ -184,8 +185,7 @@ public class PersonaDAOImpl implements PersonaDAO {
      * Cuenta la cantidad total de personas en la base de datos.
      * @return Cantidad de personas
      */
-    @Override
-    public long count() {
+    public long contarTotal() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Consulta JPQL para contar las personas
@@ -201,8 +201,7 @@ public class PersonaDAOImpl implements PersonaDAO {
      * @param dni DNI a buscar
      * @return Optional con la persona si existe
      */
-    @Override
-    public Optional<Persona> findByDni(String dni) {
+    public Optional<Persona> buscarPorDni(String dni) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Consulta JPQL con parámetro :dni
@@ -227,15 +226,14 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     /**
      * Busca personas cuyo nombre o apellido contengan el texto proporcionado.
-     * @param query Texto a buscar
+     * @param texto Texto a buscar
      * @return Lista de personas que coinciden con la búsqueda
      */
-    @Override
-    public List<Persona> findByNombreOrApellido(String query) {
+    public List<Persona> buscarPorNombreOApellido(String texto) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             // Consulta JPQL con búsqueda parcial (LIKE) e insensible a mayúsculas/minúsculas
-            TypedQuery<Persona> tQuery = em.createQuery(
+            TypedQuery<Persona> query = em.createQuery(
                 "SELECT p FROM Persona p WHERE " +
                 "LOWER(p.nombre) LIKE LOWER(:query) OR " +
                 "LOWER(p.apellido) LIKE LOWER(:query) " +
@@ -243,8 +241,8 @@ public class PersonaDAOImpl implements PersonaDAO {
                 Persona.class
             );
             // Establecer parámetro con % para búsqueda parcial
-            tQuery.setParameter("query", "%" + query + "%");
-            return tQuery.getResultList();
+            query.setParameter("query", "%" + texto + "%");
+            return query.getResultList();
         } finally {
             em.close();
         }
@@ -258,11 +256,8 @@ public class PersonaDAOImpl implements PersonaDAO {
      */
     public List<Persona> buscar(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
-            return findAll(); // Si no hay texto de búsqueda, retorna todas las personas
+            return buscarTodos(); // Si no hay texto de búsqueda, retorna todas las personas
         }
-        return findByNombreOrApellido(texto);
+        return buscarPorNombreOApellido(texto);
     }
-    
-
-    //
 }

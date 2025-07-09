@@ -2,8 +2,7 @@
 package com.gestioneventos.controller.personas;
 
 import com.gestioneventos.model.personas.Persona;
-import com.gestioneventos.service.PersonaService;
-import com.gestioneventos.service.impl.PersonaServiceImpl;
+import com.gestioneventos.service.ServicioPersona;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -72,7 +71,7 @@ public class ListaPersonasController implements Initializable {
     private Button btnVolver; // Botón para volver a la pantalla anterior
     
     // Servicio para operaciones de negocio con personas
-    private final PersonaService personaService;
+    private final ServicioPersona personaService;
     
     // Lista observable para mostrar en la tabla
     private ObservableList<Persona> listaPersonas;
@@ -82,7 +81,7 @@ public class ListaPersonasController implements Initializable {
      */
     public ListaPersonasController() {
         // Inicializamos el servicio
-        this.personaService = new PersonaServiceImpl();
+        this.personaService = new ServicioPersona();
         // Inicializamos la lista observable vacía
         this.listaPersonas = FXCollections.observableArrayList();
     }
@@ -189,14 +188,12 @@ public class ListaPersonasController implements Initializable {
             FormularioPersonaController controller = loader.getController();
             controller.setListaPersonasController(this);
             
-            Stage stage = new Stage();
-            stage.setTitle("Nueva Persona");
-            Scene scene = new Scene(root);
-            // Agrega la hoja de estilos
-            //scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            Stage stage = new Stage(); // Creamos una nueva ventana
+            stage.setTitle("Nueva Persona"); // Título de la ventana
+            Scene scene = new Scene(root); // Creamos la escena con el root cargado
+            stage.setScene(scene); // Asignamos la escena a la ventana
+            stage.initModality(Modality.APPLICATION_MODAL); // Modalidad para que sea modal respecto a la ventana principal
+            stage.showAndWait(); // Mostramos la ventana y esperamos a que se cierre
             
         } catch (IOException e) {
             e.printStackTrace();

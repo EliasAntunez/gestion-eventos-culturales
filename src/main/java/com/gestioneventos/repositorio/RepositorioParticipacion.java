@@ -1,6 +1,5 @@
-package com.gestioneventos.dao.impl;
+package com.gestioneventos.repositorio;
 
-import com.gestioneventos.dao.ParticipacionDAO;
 import com.gestioneventos.model.participaciones.Participacion;
 import com.gestioneventos.model.participaciones.RolParticipacion;
 import com.gestioneventos.util.JPAUtil;
@@ -11,18 +10,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del DAO para la entidad Participacion.
+ * Repositorio para operaciones con la entidad Participacion.
+ * Maneja el acceso a datos para la entidad Participacion.
  */
-public class ParticipacionDAOImpl implements ParticipacionDAO {
+public class RepositorioParticipacion {
 
-    @Override
-    public Participacion save(Participacion entity) {
+    /**
+     * Guarda una nueva participación en la base de datos.
+     * @param participacion La participación a guardar
+     * @return La participación guardada con su ID generado
+     */
+    public Participacion guardar(Participacion participacion) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(entity);
+            em.persist(participacion);
             em.getTransaction().commit();
-            return entity;
+            return participacion;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
@@ -33,12 +37,16 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public Participacion update(Participacion entity) {
+    /**
+     * Actualiza una participación existente.
+     * @param participacion La participación a actualizar
+     * @return La participación actualizada
+     */
+    public Participacion actualizar(Participacion participacion) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            Participacion mergedParticipacion = em.merge(entity);
+            Participacion mergedParticipacion = em.merge(participacion);
             em.getTransaction().commit();
             return mergedParticipacion;
         } catch (Exception e) {
@@ -51,8 +59,21 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public Optional<Participacion> findById(Long id) {
+    /**
+     * Guarda o actualiza una participación dependiendo si tiene id o no.
+     * @param participacion La participación a guardar o actualizar
+     * @return La participación guardada o actualizada
+     */
+    public Participacion guardarOActualizar(Participacion participacion) {
+        return participacion.getId() == null ? guardar(participacion) : actualizar(participacion);
+    }
+
+    /**
+     * Busca una participación por su ID.
+     * @param id ID de la participación a buscar
+     * @return Optional con la participación si existe
+     */
+    public Optional<Participacion> buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             Participacion participacion = em.find(Participacion.class, id);
@@ -62,8 +83,11 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public List<Participacion> findAll() {
+    /**
+     * Obtiene todas las participaciones ordenadas por fecha de inicio del evento.
+     * @return Lista de todas las participaciones
+     */
+    public List<Participacion> buscarTodas() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Participacion> query = em.createQuery(
@@ -77,18 +101,21 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public void delete(Participacion entity) {
+    /**
+     * Elimina una participación de la base de datos.
+     * @param participacion La participación a eliminar
+     */
+    public void eliminar(Participacion participacion) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            if (!em.contains(entity)) {
-                entity = em.find(Participacion.class, entity.getId());
-                if (entity == null) {
+            if (!em.contains(participacion)) {
+                participacion = em.find(Participacion.class, participacion.getId());
+                if (participacion == null) {
                     return; // No existe, no hacemos nada
                 }
             }
-            em.remove(entity);
+            em.remove(participacion);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -100,8 +127,11 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public void deleteById(Long id) {
+    /**
+     * Elimina una participación por su ID.
+     * @param id ID de la participación a eliminar
+     */
+    public void eliminarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -120,8 +150,12 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public boolean existsById(Long id) {
+    /**
+     * Verifica si existe una participación con el ID proporcionado.
+     * @param id ID a verificar
+     * @return true si la participación existe, false en caso contrario
+     */
+    public boolean existePorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.find(Participacion.class, id) != null;
@@ -130,8 +164,11 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public long count() {
+    /**
+     * Cuenta la cantidad total de participaciones en la base de datos.
+     * @return Cantidad de participaciones
+     */
+    public long contarTotal() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Participacion p", Long.class);
@@ -141,8 +178,12 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public List<Participacion> findByEventoId(Long eventoId) {
+    /**
+     * Busca participaciones asociadas a un evento específico.
+     * @param eventoId ID del evento
+     * @return Lista de participaciones del evento
+     */
+    public List<Participacion> buscarPorEventoId(Long eventoId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Participacion> query = em.createQuery(
@@ -158,8 +199,12 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public List<Participacion> findByPersonaId(Long personaId) {
+    /**
+     * Busca participaciones de una persona específica.
+     * @param personaId ID de la persona
+     * @return Lista de participaciones de la persona
+     */
+    public List<Participacion> buscarPorPersonaId(Long personaId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Participacion> query = em.createQuery(
@@ -175,8 +220,13 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public List<Participacion> findByEventoIdAndPersonaId(Long eventoId, Long personaId) {
+    /**
+     * Busca participaciones por evento y persona.
+     * @param eventoId ID del evento
+     * @param personaId ID de la persona
+     * @return Lista de participaciones que cumplen ambos criterios
+     */
+    public List<Participacion> buscarPorEventoIdYPersonaId(Long eventoId, Long personaId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Participacion> query = em.createQuery(
@@ -192,8 +242,13 @@ public class ParticipacionDAOImpl implements ParticipacionDAO {
         }
     }
 
-    @Override
-    public List<Participacion> findByEventoIdAndRol(Long eventoId, RolParticipacion rol) {
+    /**
+     * Busca participaciones por evento y rol.
+     * @param eventoId ID del evento
+     * @param rol Rol de participación
+     * @return Lista de participaciones en el evento con el rol especificado
+     */
+    public List<Participacion> buscarPorEventoIdYRol(Long eventoId, RolParticipacion rol) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<Participacion> query = em.createQuery(

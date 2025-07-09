@@ -1,36 +1,38 @@
-package com.gestioneventos.service.impl;
+package com.gestioneventos.service;
 
-import com.gestioneventos.dao.ParticipacionDAO;
-import com.gestioneventos.dao.impl.ParticipacionDAOImpl;
 import com.gestioneventos.model.participaciones.Participacion;
 import com.gestioneventos.model.participaciones.RolParticipacion;
-import com.gestioneventos.service.ParticipacionService;
+import com.gestioneventos.repositorio.RepositorioParticipacion;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Implementación del servicio de participaciones.
+ * Servicio para la gestión de participaciones en eventos.
  */
-public class ParticipacionServiceImpl implements ParticipacionService {
+public class ServicioParticipacion {
 
-    private final ParticipacionDAO participacionDAO;
+    private final RepositorioParticipacion repositorioParticipacion;
     
     /**
      * Constructor por defecto.
      */
-    public ParticipacionServiceImpl() {
-        this.participacionDAO = new ParticipacionDAOImpl();
+    public ServicioParticipacion() {
+        this.repositorioParticipacion = new RepositorioParticipacion();
     }
     
     /**
      * Constructor con inyección de DAO para pruebas.
      */
-    public ParticipacionServiceImpl(ParticipacionDAO participacionDAO) {
-        this.participacionDAO = participacionDAO;
+    public ServicioParticipacion(RepositorioParticipacion repositorioParticipacion) {
+        this.repositorioParticipacion = repositorioParticipacion;
     }
 
-    @Override
+    /**
+     * Guarda una nueva participación o actualiza una existente.
+     * @param participacion Participación a guardar o actualizar
+     * @return La participación guardada con su ID asignado
+     */
     public Participacion guardar(Participacion participacion) {
         if (participacion == null) {
             throw new IllegalArgumentException("La participación no puede ser nula");
@@ -49,40 +51,60 @@ public class ParticipacionServiceImpl implements ParticipacionService {
         }
         
         return participacion.getId() == null ? 
-               participacionDAO.save(participacion) : 
-               participacionDAO.update(participacion);
+               repositorioParticipacion.guardar(participacion) : 
+               repositorioParticipacion.actualizar(participacion);
     }
 
-    @Override
+    /**
+     * Busca una participación por su ID.
+     * @param id ID de la participación a buscar
+     * @return Optional con la participación si es encontrada, o vacío si no existe
+     */
     public Optional<Participacion> buscarPorId(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID de la participación no puede ser nulo");
         }
-        return participacionDAO.findById(id);
+        return repositorioParticipacion.buscarPorId(id);
     }
 
-    @Override
+    /**
+     * Busca todas las participaciones.
+     * @return Lista con todas las participaciones
+     */
     public List<Participacion> buscarTodas() {
-        return participacionDAO.findAll();
+        return repositorioParticipacion.buscarTodas();
     }
 
-    @Override
+    /**
+     * Busca participaciones por el ID del evento.
+     * @param eventoId ID del evento
+     * @return Lista de participaciones del evento
+     */
     public List<Participacion> buscarPorEvento(Long eventoId) {
         if (eventoId == null) {
             throw new IllegalArgumentException("El ID del evento no puede ser nulo");
         }
-        return participacionDAO.findByEventoId(eventoId);
+        return repositorioParticipacion.buscarPorEventoId(eventoId);
     }
 
-    @Override
+    /**
+     * Busca participaciones por el ID de la persona.
+     * @param personaId ID de la persona
+     * @return Lista de participaciones de la persona
+     */
     public List<Participacion> buscarPorPersona(Long personaId) {
         if (personaId == null) {
             throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
         }
-        return participacionDAO.findByPersonaId(personaId);
+        return repositorioParticipacion.buscarPorPersonaId(personaId);
     }
     
-    @Override
+    /**
+     * Busca participaciones por el ID del evento y un rol específico.
+     * @param eventoId ID del evento
+     * @param rol Rol de la participación
+     * @return Lista de participaciones que cumplen ambos criterios
+     */
     public List<Participacion> buscarPorEventoYRol(Long eventoId, RolParticipacion rol) {
         if (eventoId == null) {
             throw new IllegalArgumentException("El ID del evento no puede ser nulo");
@@ -90,10 +112,15 @@ public class ParticipacionServiceImpl implements ParticipacionService {
         if (rol == null) {
             throw new IllegalArgumentException("El rol no puede ser nulo");
         }
-        return participacionDAO.findByEventoIdAndRol(eventoId, rol);
+        return repositorioParticipacion.buscarPorEventoIdYRol(eventoId, rol);
     }
     
-    @Override
+    /**
+     * Busca participaciones por evento y persona.
+     * @param eventoId ID del evento
+     * @param personaId ID de la persona
+     * @return Lista de participaciones que cumplen ambos criterios
+     */
     public List<Participacion> buscarPorEventoYPersona(Long eventoId, Long personaId) {
         if (eventoId == null) {
             throw new IllegalArgumentException("El ID del evento no puede ser nulo");
@@ -101,20 +128,24 @@ public class ParticipacionServiceImpl implements ParticipacionService {
         if (personaId == null) {
             throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
         }
-        return participacionDAO.findByEventoIdAndPersonaId(eventoId, personaId);
+        return repositorioParticipacion.buscarPorEventoIdYPersonaId(eventoId, personaId);
     }
 
-    @Override
+    /**
+     * Elimina una participación por su ID.
+     * @param id ID de la participación a eliminar
+     * @return true si la participación fue eliminada, false si no existía
+     */
     public boolean eliminar(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("El ID de la participación no puede ser nulo");
         }
         
-        if (!participacionDAO.existsById(id)) {
+        if (!repositorioParticipacion.existePorId(id)) {
             return false;
         }
         
-        participacionDAO.deleteById(id);
+        repositorioParticipacion.eliminarPorId(id);
         return true;
     }
 }

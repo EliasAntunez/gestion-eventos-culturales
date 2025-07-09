@@ -3,8 +3,8 @@ package com.gestioneventos.controller.eventos;
 import com.gestioneventos.model.eventos.*;
 import com.gestioneventos.model.participaciones.Participacion;
 import com.gestioneventos.model.participaciones.RolParticipacion;
-import com.gestioneventos.service.EventoService;
-import com.gestioneventos.service.impl.EventoServiceImpl;
+import com.gestioneventos.service.ServicioEvento;
+import com.gestioneventos.service.ServicioPersona;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -19,8 +19,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-import com.gestioneventos.service.PersonaService;
-import com.gestioneventos.service.impl.PersonaServiceImpl;
 
 import com.gestioneventos.model.personas.Persona;
 import javafx.collections.ObservableList;
@@ -95,19 +93,19 @@ public class FormularioEventoController implements Initializable {
     
     // Variables de estado
     private Evento eventoEditando;
-    private final EventoService eventoService;
+    private final ServicioEvento eventoService;
     private boolean esEdicion = false;
 
     // Añadir estas declaraciones al inicio de la clase, junto con las otras variables
-    private final PersonaService personaService;
+    private final ServicioPersona personaService;
     private ObservableList<Persona> organizadoresSeleccionados;
     
     /**
      * Constructor que inicializa el servicio.
      */
     public FormularioEventoController() {
-        this.eventoService = new EventoServiceImpl();
-        this.personaService = new PersonaServiceImpl();
+        this.eventoService = new ServicioEvento();
+        this.personaService = new ServicioPersona();
     }
     
     /**
