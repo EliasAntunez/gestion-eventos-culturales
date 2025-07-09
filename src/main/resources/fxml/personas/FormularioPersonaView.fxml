@@ -21,7 +21,7 @@
   Formulario para crear o editar una persona.
   Se utiliza tanto para nuevas personas como para modificar existentes.
 -->
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/styles-formulariopersona.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.FormularioPersonaController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/personas/styles-formulariopersona.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.FormularioPersonaController">
    <top>
       <!-- Sección superior con título -->
       <VBox styleClass="encabezado-persona" alignment="CENTER_LEFT" BorderPane.alignment="CENTER">

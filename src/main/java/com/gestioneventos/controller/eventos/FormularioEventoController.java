@@ -278,6 +278,9 @@ public class FormularioEventoController implements Initializable {
         // Cargar datos del evento
         cargarDatosEvento();
         
+        //Carga inicial de personas
+        cargarPersonas();
+
         // Cambiar título
         lblTitulo.setText("Editar Evento");
     }

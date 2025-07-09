@@ -1,7 +1,7 @@
 package com.gestioneventos.dao.impl;
 
-import com.gestioneventos.dao.EventoDAO;
 import com.gestioneventos.model.eventos.Evento;
+import com.gestioneventos.dao.EventoDAO;
 import com.gestioneventos.model.eventos.EstadoEvento;
 import com.gestioneventos.util.JPAUtil;
 import jakarta.persistence.EntityManager;

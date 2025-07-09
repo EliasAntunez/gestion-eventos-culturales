@@ -1,6 +1,7 @@
 package com.gestioneventos.controller.eventos;
 
 import com.gestioneventos.model.eventos.Evento;
+import com.gestioneventos.controller.participaciones.ListaParticipacionesController;
 import com.gestioneventos.model.eventos.Cine;
 import com.gestioneventos.model.eventos.Taller;
 import com.gestioneventos.model.eventos.Concierto;
@@ -191,7 +192,7 @@ public class ListaEventosController implements Initializable {
         // Habilitar/deshabilitar botones según selección
         tablaEventos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             boolean haySeleccion = newSelection != null;
-            btnEditarEvento.setDisable(!haySeleccion);
+            //btnEditarEvento.setDisable(!haySeleccion);
             btnEliminarEvento.setDisable(!haySeleccion);
             btnVerParticipantes.setDisable(!haySeleccion);
         });
@@ -444,36 +445,36 @@ public class ListaEventosController implements Initializable {
     }
     
     /**
-     * Abre la ventana para gestionar participantes del evento seleccionado.
+     * Abre la ventana para ver los participantes del evento seleccionado.
      */
     @FXML
-    private void verParticipantes(ActionEvent event) {
+    private void verParticipantes() {
         Evento eventoSeleccionado = tablaEventos.getSelectionModel().getSelectedItem();
         if (eventoSeleccionado == null) {
             mostrarMensajeError("Error", "Debe seleccionar un evento para ver sus participantes");
             return;
         }
-        
+
         try {
-            // Cargamos la vista de participantes
+            // Cargar el FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/participaciones/ListaParticipacionesView.fxml"));
             Parent root = loader.load();
             
-            // Configurar el controlador de participaciones
-            // Si tienes un controlador dedicado para participaciones, deberías realizar algo como:
-            // ListaParticipacionesController controller = loader.getController();
-            // controller.setEvento(eventoSeleccionado);
-
+            // Obtener el controlador y pasar el evento seleccionado
+            ListaParticipacionesController controller = loader.getController();
+            controller.setEvento(eventoSeleccionado);
+            
+            // Configurar y mostrar la ventana
             Stage stage = new Stage();
             stage.setTitle("Participantes del evento: " + eventoSeleccionado.getNombre());
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.WINDOW_MODAL); // Bloquea la ventana principal
+            stage.initOwner(tablaEventos.getScene().getWindow()); // Establece la ventana padre
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            mostrarMensajeError("Error al abrir participantes", e.getMessage());
+            mostrarMensajeError("Error al abrir ventana", 
+                "No se pudo abrir la ventana de participantes: " + e.getMessage());
         }
     }
 

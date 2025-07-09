@@ -16,7 +16,7 @@
   Muestra una tabla con todas las personas y controles para buscar, agregar, editar y eliminar.
 -->
 
-<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/styles-listapersonas.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.ListaPersonasController">
+<BorderPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" stylesheets="@/css/personas/styles-listapersonas.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gestioneventos.controller.personas.ListaPersonasController">
    <top>
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <children>

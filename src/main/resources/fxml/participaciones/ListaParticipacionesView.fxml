@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" 
+            stylesheets="@/css/participaciones/styles-listaparticipaciones.css" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.gestioneventos.controller.participaciones.ListaParticipacionesController">
+    <top>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <!-- Encabezado -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="titulo-participaciones">
+                    <children>
+                        <Label fx:id="lblTituloEvento" text="Participantes del evento" styleClass="titulo-vista">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                    </padding>
+                </HBox>
+                
+                <!-- Panel de filtros -->
+                <GridPane hgap="10.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" prefWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" prefWidth="200.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="Nombre:" />
+                        <TextField fx:id="txtFiltroNombre" promptText="Buscar participante" GridPane.columnIndex="1" />
+                        <Label text="Rol:" GridPane.columnIndex="2" />
+                        <ComboBox fx:id="cmbFiltroRol" prefWidth="150.0" GridPane.columnIndex="3" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                    </VBox.margin>
+                </GridPane>
+                
+                <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                    <children>
+                        <Button fx:id="btnBuscar" text="Buscar" onAction="#buscarParticipantes" styleClass="btn-primary" />
+                    </children>
+                    <VBox.margin>
+                        <Insets right="10.0" />
+                    </VBox.margin>
+                </HBox>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </VBox>
+    </top>
+    <center>
+        <!-- Tabla de participantes -->
+        <TableView fx:id="tablaParticipaciones" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="colNombrePersona" prefWidth="150.0" text="Nombre" />
+                <TableColumn fx:id="colApellidoPersona" prefWidth="150.0" text="Apellido" />
+                <TableColumn fx:id="colDniPersona" prefWidth="100.0" text="DNI" />
+                <TableColumn fx:id="colRol" prefWidth="120.0" text="Rol" />
+                <TableColumn fx:id="colFechaInscripcion" prefWidth="120.0" text="Fecha inscripción" />
+            </columns>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+    </center>
+    <bottom>
+        <!-- Barra inferior con botones de acción -->
+        <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="lblCantidadParticipantes" text="Total: 0 participantes" HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnNuevoParticipante" mnemonicParsing="false" onAction="#nuevoParticipante" text="Agregar participante" />
+                <Button fx:id="btnEditarParticipacion" mnemonicParsing="false" onAction="#editarParticipacion" text="Editar" />
+                <Button fx:id="btnEliminarParticipacion" mnemonicParsing="false" onAction="#eliminarParticipacion" text="Eliminar" />
+                <Button fx:id="btnCerrar" mnemonicParsing="false" onAction="#cerrarVentana" text="Cerrar" />
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </HBox>
+    </bottom>
+</BorderPane>
