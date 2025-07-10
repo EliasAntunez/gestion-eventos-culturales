@@ -9,16 +9,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
-
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.io.IOException;
 
+/**
+ * Controlador principal de la aplicación.
+ * Maneja la navegación entre las diferentes vistas.
+ */
 public class MainController {
 
     // === Referencias a los nodos del FXML ===
@@ -96,40 +98,73 @@ public class MainController {
         Platform.exit();
     }
 
+    /**
+     * Abre el formulario para crear un nuevo evento.
+     */
     @FXML
     private void nuevoEvento(ActionEvent event) {
         // Implementar la lógica para crear un nuevo evento
         System.out.println("Crear nuevo evento");
     }
 
+    /**
+     * Abre la vista para gestionar eventos existentes.
+     */
     @FXML
-private void gestionarEventos(ActionEvent event) {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/eventos/ListaEventoView.fxml"));
-        Parent root = loader.load();
-
-        Stage stage = new Stage();
-        stage.setTitle("Gestión de Eventos");
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
-    } catch (IOException e) {
-        e.printStackTrace();
-        mostrarError("Error al abrir la gestión de eventos", e.getMessage());
-    }
-}
-
-    @FXML
-    private void gestionarPersonas(ActionEvent event) {
+    private void gestionarEventos(ActionEvent event) {
+        // Implementar la lógica para gestionar eventos
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/ListaPersonasView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/eventos/ListaEventoView.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();
+            stage.setTitle("Gestión de Eventos");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Opcional: bloquea la ventana principal
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error al abrir la gestión de eventos", e.getMessage());
+        }
+        System.out.println("Gestionar eventos");
+    }
+
+    /**
+     * Abre el formulario para crear una nueva persona.
+     */
+    @FXML
+    private void nuevaPersona(ActionEvent event) {
+        try {
+            // Cargar la vista del formulario de persona
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/FormularioPersonaView.fxml"));
+            Parent root = loader.load();
+            
+            // Configurar y mostrar la ventana
+            Stage stage = new Stage();
+            stage.setTitle("Nueva Persona");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Modal para bloquear ventana principal
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarError("Error al abrir el formulario de personas", e.getMessage());
+        }
+    }
+
+    /**
+     * Abre la vista para gestionar personas existentes.
+     */
+    @FXML
+    private void gestionarPersonas(ActionEvent event) {
+        try {
+            // Cargar la vista de lista de personas
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/ListaPersonasView.fxml"));
+            Parent root = loader.load();
+            
+            // Configurar y mostrar la ventana
+            Stage stage = new Stage();
             stage.setTitle("Gestión de Personas");
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
         } catch (IOException e) {
@@ -137,14 +172,15 @@ private void gestionarEventos(ActionEvent event) {
             mostrarError("Error al abrir la gestión de personas", e.getMessage());
         }
     }
-
-    // === Utilidad ===
+    
+    /**
+     * Muestra un diálogo de error al usuario.
+     */
     private void mostrarError(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-    
 }

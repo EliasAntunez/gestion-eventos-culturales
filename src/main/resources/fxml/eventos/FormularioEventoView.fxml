@@ -166,7 +166,7 @@
                   <Separator />
                   
                   <!-- DATOS ESPECÍFICOS SEGÚN TIPO -->
-                  <VBox spacing="10.0">
+                  <VBox spacing="5.0">
                      <children>
                         <Label styleClass="section-header" text="Datos Específicos">
                            <font>
@@ -176,7 +176,7 @@
                         
                         <VBox fx:id="contenedorTiposEvento" spacing="10.0">
                            <!-- GridPane para Cine -->
-                           <GridPane fx:id="gridCine" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                           <GridPane fx:id="gridCine" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false" managed="false">
                               <columnConstraints>
                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
@@ -208,7 +208,7 @@
                            </GridPane>
                            
                            <!-- GridPane para Taller -->
-                           <GridPane fx:id="gridTaller" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                           <GridPane fx:id="gridTaller" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false" managed="false">
                               <columnConstraints>
                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
@@ -241,7 +241,7 @@
                            
                            <!-- Otros GridPane para tipos específicos... -->
                            <!-- GridPane para Concierto -->
-                           <GridPane fx:id="gridConcierto" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                           <GridPane fx:id="gridConcierto" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false" managed="false">
                               <columnConstraints>
                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
@@ -273,7 +273,7 @@
                            </GridPane>
                            
                            <!-- GridPane para Exposición -->
-                           <GridPane fx:id="gridExposicion" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                           <GridPane fx:id="gridExposicion" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false" managed="false">
                               <columnConstraints>
                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />
@@ -296,7 +296,7 @@
                            </GridPane>
                            
                            <!-- GridPane para Feria -->
-                           <GridPane fx:id="gridFeria" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false">
+                           <GridPane fx:id="gridFeria" hgap="15.0" styleClass="grid-section" vgap="15.0" visible="false" managed="false">
                               <columnConstraints>
                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="100.0" prefWidth="150.0" />
                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="300.0" />

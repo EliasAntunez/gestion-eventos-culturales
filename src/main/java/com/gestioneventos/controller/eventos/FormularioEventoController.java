@@ -153,6 +153,9 @@ public class FormularioEventoController implements Initializable {
         
         // Establecer estilo para el label de información
         lblOrganizadoresInfo.getStyleClass().add("nota-obligatorio");
+
+        //Forzamos mayusculas en los campos de texto
+
     }
 
     /**
@@ -401,11 +404,26 @@ public class FormularioEventoController implements Initializable {
         
         // Mostrar SOLO el seleccionado en la misma posición
         switch (tipoEvento) {
-            case "Cine" -> gridCine.setVisible(true);
-            case "Taller" -> gridTaller.setVisible(true);
-            case "Concierto" -> gridConcierto.setVisible(true);
-            case "Exposición" -> gridExposicion.setVisible(true);
-            case "Feria" -> gridFeria.setVisible(true);
+            case "Cine" -> {
+                gridCine.setVisible(true);
+                gridCine.setManaged(true);
+            }
+            case "Taller" -> {
+                gridTaller.setVisible(true);
+                gridTaller.setManaged(true);
+            }
+            case "Concierto" -> {
+                gridConcierto.setVisible(true);
+                gridConcierto.setManaged(true);
+            }
+            case "Exposición" -> {
+                gridExposicion.setVisible(true);
+                gridExposicion.setManaged(true);
+            }
+            case "Feria" -> {
+                gridFeria.setVisible(true);
+                gridFeria.setManaged(true);
+            }
         }
     }
     
@@ -414,10 +432,15 @@ public class FormularioEventoController implements Initializable {
      */
     private void ocultarTodosLosFormulariosEspecificos() {
         gridCine.setVisible(false);
+        gridCine.setManaged(false);
         gridTaller.setVisible(false);
+        gridTaller.setManaged(false);
         gridConcierto.setVisible(false);
+        gridConcierto.setManaged(false);
         gridExposicion.setVisible(false);
+        gridExposicion.setManaged(false);
         gridFeria.setVisible(false);
+        gridFeria.setManaged(false);
     }
     
     /**
@@ -433,7 +456,7 @@ public class FormularioEventoController implements Initializable {
             }
             
             // Obtener datos generales
-            String nombre = txtNombre.getText().trim();
+            String nombre = txtNombre.getText().trim().toUpperCase();
             LocalDate fechaInicio = dpFechaInicio.getValue();
             int duracionEstimada = Integer.parseInt(txtDuracionEstimada.getText().trim());
             EstadoEvento estadoEvento = cmbEstadoEvento.getValue();
@@ -504,14 +527,13 @@ public class FormularioEventoController implements Initializable {
     /**
      * Crea o actualiza un evento de tipo Cine.
      */
-    private Evento guardarCine(String nombre, LocalDate fechaInicio, int duracionEstimada, 
-                             EstadoEvento estadoEvento, boolean permiteInscripcion) {
+    private Evento guardarCine(String nombre, LocalDate fechaInicio, int duracionEstimada, EstadoEvento estadoEvento, boolean permiteInscripcion) {
         if (!validarCamposCine()) {
             return null;
         }
         
         int ordenProyeccion = Integer.parseInt(txtOrdenProyeccion.getText().trim());
-        String tituloPelicula = txtTituloPelicula.getText().trim();
+        String tituloPelicula = txtTituloPelicula.getText().trim().toUpperCase();
         
         if (esEdicion && eventoEditando instanceof Cine) {
             // Actualizar existente
@@ -526,16 +548,14 @@ public class FormularioEventoController implements Initializable {
             return cine;
         } else {
             // Crear nuevo
-            return new Cine(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, 
-                           ordenProyeccion, tituloPelicula);
+            return new Cine(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, ordenProyeccion, tituloPelicula);
         }
     }
     
     /**
      * Crea o actualiza un evento de tipo Taller.
      */
-    private Evento guardarTaller(String nombre, LocalDate fechaInicio, int duracionEstimada, 
-                               EstadoEvento estadoEvento, boolean permiteInscripcion) {
+    private Evento guardarTaller(String nombre, LocalDate fechaInicio, int duracionEstimada, EstadoEvento estadoEvento, boolean permiteInscripcion) {
         if (!validarCamposTaller()) {
             return null;
         }
@@ -556,21 +576,19 @@ public class FormularioEventoController implements Initializable {
             return taller;
         } else {
             // Crear nuevo
-            return new Taller(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, 
-                             cupoMaximo, modalidad);
+            return new Taller(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, cupoMaximo, modalidad);
         }
     }
     
     /**
      * Crea o actualiza un evento de tipo Concierto.
      */
-    private Evento guardarConcierto(String nombre, LocalDate fechaInicio, int duracionEstimada, 
-                                  EstadoEvento estadoEvento, boolean permiteInscripcion) {
+    private Evento guardarConcierto(String nombre, LocalDate fechaInicio, int duracionEstimada, EstadoEvento estadoEvento, boolean permiteInscripcion) {
         if (!validarCamposConcierto()) {
             return null;
         }
         
-        String artistaPrincipal = txtArtistaPrincipal.getText().trim();
+        String artistaPrincipal = txtArtistaPrincipal.getText().trim().toUpperCase();
         TipoEntrada tipoEntrada = cmbTipoEntrada.getValue();
         
         if (esEdicion && eventoEditando instanceof Concierto) {
@@ -586,16 +604,14 @@ public class FormularioEventoController implements Initializable {
             return concierto;
         } else {
             // Crear nuevo
-            return new Concierto(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, 
-                                tipoEntrada, artistaPrincipal);
+            return new Concierto(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoEntrada, artistaPrincipal);
         }
     }
     
     /**
      * Crea o actualiza un evento de tipo Exposición.
      */
-    private Evento guardarExposicion(String nombre, LocalDate fechaInicio, int duracionEstimada, 
-                                   EstadoEvento estadoEvento, boolean permiteInscripcion) {
+    private Evento guardarExposicion(String nombre, LocalDate fechaInicio, int duracionEstimada, EstadoEvento estadoEvento, boolean permiteInscripcion) {
         if (!validarCamposExposicion()) {
             return null;
         }
@@ -614,16 +630,14 @@ public class FormularioEventoController implements Initializable {
             return exposicion;
         } else {
             // Crear nuevo
-            return new Exposicion(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, 
-                                 tipoArte);
+            return new Exposicion(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoArte);
         }
     }
     
     /**
      * Crea o actualiza un evento de tipo Feria.
      */
-    private Evento guardarFeria(String nombre, LocalDate fechaInicio, int duracionEstimada, 
-                              EstadoEvento estadoEvento, boolean permiteInscripcion) {
+    private Evento guardarFeria(String nombre, LocalDate fechaInicio, int duracionEstimada, EstadoEvento estadoEvento, boolean permiteInscripcion) {
         if (!validarCamposFeria()) {
             return null;
         }
@@ -644,8 +658,7 @@ public class FormularioEventoController implements Initializable {
             return feria;
         } else {
             // Crear nuevo
-            return new Feria(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, 
-                            cantidadStands, tipoUbicacion);
+            return new Feria(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, cantidadStands, tipoUbicacion);
         }
     }
     
@@ -653,46 +666,71 @@ public class FormularioEventoController implements Initializable {
      * Valida los campos generales del evento.
      * @return true si los campos son válidos, false en caso contrario
      */
+    // Método utilitario para limpiar estilos de cualquier cantidad de campos
+    private void limpiarEstilosCampos(Control... controles) {
+        for (Control c : controles) {
+            c.getStyleClass().remove("campo-invalido");
+        }
+    }
+
     private boolean validarCamposGenerales() {
         // Validar tipo de evento
+        limpiarEstilosCampos(txtNombre, dpFechaInicio, txtDuracionEstimada, cmbEstadoEvento, cmbTipoEvento);
         if (cmbTipoEvento.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de evento");
+            cmbTipoEvento.getStyleClass().add("campo-invalido");
             return false;
         }
-        
-        // Validar nombre
         if (txtNombre.getText() == null || txtNombre.getText().trim().isEmpty()) {
             mostrarError("El nombre es obligatorio");
+            txtNombre.getStyleClass().add("campo-invalido");
             return false;
         }
         
-        // Validar fecha de inicio
+        if (!txtNombre.getText().trim().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+            mostrarError("El nombre solo puede contener letras y espacios");
+            txtNombre.getStyleClass().add("campo-invalido");
+            return false;
+        }
         if (dpFechaInicio.getValue() == null) {
             mostrarError("La fecha de inicio es obligatoria");
+            dpFechaInicio.getStyleClass().add("campo-invalido");
             return false;
         }
         
         // Validar duración
+        if (txtDuracionEstimada.getText() == null || txtDuracionEstimada.getText().trim().isEmpty()) {
+            mostrarError("La duración es obligatoria");
+            txtDuracionEstimada.getStyleClass().add("campo-invalido");
+            return false;
+        }
         try {
             int duracion = Integer.parseInt(txtDuracionEstimada.getText().trim());
             if (duracion <= 0) {
                 mostrarError("La duración debe ser un número positivo");
+                txtDuracionEstimada.getStyleClass().add("campo-invalido");
                 return false;
+            }
+            if (duracion > 31) {
+            mostrarError("La duración no puede ser mayor a 31 días");
+            txtDuracionEstimada.getStyleClass().add("campo-invalido");
+            return false;
             }
         } catch (NumberFormatException e) {
             mostrarError("La duración debe ser un número entero válido");
+            txtDuracionEstimada.getStyleClass().add("campo-invalido");
             return false;
         }
-        
-        // Validar estado
         if (cmbEstadoEvento.getValue() == null) {
             mostrarError("Debe seleccionar un estado para el evento");
+            cmbEstadoEvento.getStyleClass().add("campo-invalido");
             return false;
         }
 
         // Validar que haya al menos un organizador
         if (organizadoresSeleccionados.isEmpty()) {
             mostrarError("Debe seleccionar al menos un organizador");
+            tablaOrganizadores.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -704,6 +742,7 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposCine() {
+        limpiarEstilosCampos(txtOrdenProyeccion, txtTituloPelicula);
         // Validar orden de proyección
         try {
             int orden = Integer.parseInt(txtOrdenProyeccion.getText().trim());
@@ -713,12 +752,14 @@ public class FormularioEventoController implements Initializable {
             }
         } catch (NumberFormatException e) {
             mostrarError("El orden de proyección debe ser un número entero válido");
+            txtOrdenProyeccion.getStyleClass().add("campo-invalido");
             return false;
         }
         
         // Validar título de película
         if (txtTituloPelicula.getText() == null || txtTituloPelicula.getText().trim().isEmpty()) {
             mostrarError("El título de la película es obligatorio");
+            txtTituloPelicula.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -730,6 +771,7 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposTaller() {
+        limpiarEstilosCampos(txtCupoMaximo, cmbModalidad);
         // Validar cupo máximo
         try {
             int cupo = Integer.parseInt(txtCupoMaximo.getText().trim());
@@ -739,12 +781,14 @@ public class FormularioEventoController implements Initializable {
             }
         } catch (NumberFormatException e) {
             mostrarError("El cupo máximo debe ser un número entero válido");
+            txtCupoMaximo.getStyleClass().add("campo-invalido");
             return false;
         }
         
         // Validar modalidad
         if (cmbModalidad.getValue() == null) {
             mostrarError("Debe seleccionar una modalidad");
+            cmbModalidad.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -756,15 +800,18 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposConcierto() {
+        limpiarEstilosCampos(txtArtistaPrincipal, cmbTipoEntrada);
         // Validar artista principal
         if (txtArtistaPrincipal.getText() == null || txtArtistaPrincipal.getText().trim().isEmpty()) {
             mostrarError("El artista principal es obligatorio");
+            txtArtistaPrincipal.getStyleClass().add("campo-invalido");
             return false;
         }
         
         // Validar tipo de entrada
         if (cmbTipoEntrada.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de entrada");
+            cmbTipoEntrada.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -776,9 +823,11 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposExposicion() {
+        limpiarEstilosCampos(cmbTipoArte);
         // Validar tipo de arte
         if (cmbTipoArte.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de arte");
+            cmbTipoArte.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -790,21 +839,25 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposFeria() {
+        limpiarEstilosCampos(txtCantidadStands, cmbTipoUbicacion);
         // Validar cantidad de stands
         try {
             int stands = Integer.parseInt(txtCantidadStands.getText().trim());
             if (stands <= 0) {
                 mostrarError("La cantidad de stands debe ser un número positivo");
+                txtCantidadStands.getStyleClass().add("campo-invalido");
                 return false;
             }
         } catch (NumberFormatException e) {
             mostrarError("La cantidad de stands debe ser un número entero válido");
+            txtCantidadStands.getStyleClass().add("campo-invalido");
             return false;
         }
         
         // Validar tipo de ubicación
         if (cmbTipoUbicacion.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de ubicación");
+            cmbTipoUbicacion.getStyleClass().add("campo-invalido");
             return false;
         }
         
@@ -893,7 +946,5 @@ public class FormularioEventoController implements Initializable {
                 // No mostrar ningún formulario específico
                 break;
         }
-    }
-    
-
+    }  
 }

@@ -121,19 +121,18 @@ public class FormularioPersonaController implements Initializable {
                 if (!esEdicion) {
                     // Si es una nueva persona, la creamos con los datos del formulario
                     persona = new Persona(
-                            // Obtenemos los datos de los campos del formulario
-                            txtNombre.getText().trim(),
-                            txtApellido.getText().trim(),
-                            txtDni.getText().trim(),
-                            txtTelefono.getText().trim(),
+                            txtNombre.getText().trim().toUpperCase(),
+                            txtApellido.getText().trim().toUpperCase(),
+                            txtDni.getText().trim().toUpperCase(),
+                            txtTelefono.getText().trim().toUpperCase(),
                             txtEmail.getText().trim()
                     );
                 } else {
                     // Si es edición, actualizamos los datos de la persona existente
-                    persona.setNombre(txtNombre.getText().trim());
-                    persona.setApellido(txtApellido.getText().trim());
-                    persona.setDni(txtDni.getText().trim());
-                    persona.setTelefono(txtTelefono.getText().trim());
+                    persona.setNombre(txtNombre.getText().trim().toUpperCase());
+                    persona.setApellido(txtApellido.getText().trim().toUpperCase());
+                    persona.setDni(txtDni.getText().trim().toUpperCase());
+                    persona.setTelefono(txtTelefono.getText().trim().toUpperCase());
                     persona.setEmail(txtEmail.getText().trim());
                 }
                 
@@ -249,9 +248,9 @@ public class FormularioPersonaController implements Initializable {
         lblError.setText("El Email es obligatorio");
         return false;
     }
-    if (!email.contains("@")) {
-        lblError.setText("El Email debe contener '@'");
-        return false;
+    if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+    lblError.setText("Ingrese un Email válido");
+    return false;
     }
 
     // Validar DNI duplicado

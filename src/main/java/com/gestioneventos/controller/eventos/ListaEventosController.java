@@ -189,7 +189,7 @@ public class ListaEventosController implements Initializable {
         // Habilitar/deshabilitar botones según selección
         tablaEventos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             boolean haySeleccion = newSelection != null;
-            //btnEditarEvento.setDisable(!haySeleccion);
+            btnEditarEvento.setDisable(!haySeleccion);
             btnEliminarEvento.setDisable(!haySeleccion);
             btnVerParticipantes.setDisable(!haySeleccion);
         });
