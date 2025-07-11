@@ -1,6 +1,7 @@
 // c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\controller\MainController.java
 package com.gestioneventos.controller;
 
+import com.gestioneventos.model.eventos.EstadoEvento;
 import com.gestioneventos.model.eventos.Evento;
 import com.gestioneventos.repositorio.RepositorioEvento;
 import javafx.event.ActionEvent;
@@ -47,6 +48,9 @@ public class MainController {
 
     // === Lógica del calendario ===
     private void showCalendar(YearMonth yearMonth) {
+        // Actualizar automáticamente el estado de los eventos
+        actualizarEstadosEventos();
+        
         calendarGrid.getChildren().clear();
         LocalDate today = LocalDate.now();
         monthYearLabel.setText(
@@ -58,9 +62,17 @@ public class MainController {
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue(); // 1 = lunes, 7 = domingo
         int daysInMonth = yearMonth.lengthOfMonth();
 
-        RepositorioEvento repo = new RepositorioEvento();
-        List<Evento> eventosMes = repo.buscarTodos().stream()
-            .filter(e -> e.getFechaInicio().getMonthValue() == yearMonth.getMonthValue() && e.getFechaInicio().getYear() == yearMonth.getYear())
+        // Obtener todos los eventos del mes actual
+        RepositorioEvento repositorioEvento = new RepositorioEvento();
+        List<Evento> eventosMes = repositorioEvento.buscarTodos().stream()
+            .filter(e -> {
+                LocalDate fechaInicio = e.getFechaInicio();
+                LocalDate fechaFin = fechaInicio.plusDays(e.getDuracionEstimada() - 1);
+                // Incluimos eventos que empiezan, terminan o transcurren durante este mes
+                return (fechaInicio.getYear() == yearMonth.getYear() && fechaInicio.getMonthValue() == yearMonth.getMonthValue())
+                    || (fechaFin.getYear() == yearMonth.getYear() && fechaFin.getMonthValue() == yearMonth.getMonthValue())
+                    || (fechaInicio.isBefore(yearMonth.atDay(1)) && fechaFin.isAfter(yearMonth.atEndOfMonth()));
+            })
             .collect(Collectors.toList());
 
         int col = dayOfWeek - 1;
@@ -68,12 +80,13 @@ public class MainController {
 
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate date = yearMonth.atDay(day);
+            
             // Buscar eventos activos en este día
             List<Evento> eventosDia = eventosMes.stream()
                 .filter(e -> {
                     LocalDate inicio = e.getFechaInicio();
-                    LocalDate fin = inicio.plusDays(e.getDuracionEstimada() - 1);
-                    return !date.isBefore(inicio) && !date.isAfter(fin);
+                    LocalDate fechaFin = inicio.plusDays(e.getDuracionEstimada() - 1);
+                    return !date.isBefore(inicio) && !date.isAfter(fechaFin);
                 })
                 .collect(Collectors.toList());
 
@@ -90,8 +103,8 @@ public class MainController {
 
             // Línea a la izquierda si hay eventos activos en este día
             if (!eventosDia.isEmpty()) {
-                Color lineColor = date.isBefore(today) ? Color.RED : Color.web("#5bc0be");
-                Line leftLine = new Line(0, 0, 0, 18); // Altura ajustable
+                Color lineColor = Color.web("#5bc0be");
+                Line leftLine = new Line(0, 0, 0, 18);
                 leftLine.setStroke(lineColor);
                 leftLine.setStrokeWidth(4);
                 leftLine.setTranslateX(-12);
@@ -100,24 +113,69 @@ public class MainController {
             dayPane.getChildren().add(dayLabel);
 
             // Acción al hacer click: mostrar eventos activos en el día
+            final LocalDate finalDate = date;
+            final List<Evento> finalEventosDia = eventosDia;
             dayPane.setOnMouseClicked(e -> {
-                if (!eventosDia.isEmpty()) {
-                    String eventosStr = eventosDia.stream()
-                        .map(ev -> ev.getNombre())
-                        .collect(Collectors.joining("\n"));
+                if (!finalEventosDia.isEmpty()) {
+                    StringBuilder contenido = new StringBuilder();
+                    for (Evento evento : finalEventosDia) {
+                        contenido.append("• ").append(evento.getNombre())
+                                .append(" (").append(evento.getEstadoEvento()).append(")\n");
+                    }
+                    
                     javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                     alert.setTitle("Eventos del día");
-                    alert.setHeaderText("Eventos para el " + date);
-                    alert.setContentText(eventosStr);
+                    alert.setHeaderText("Eventos para el " + finalDate);
+                    alert.setContentText(contenido.toString());
                     alert.showAndWait();
                 }
             });
+
+            // Cambiar cursor a mano si hay eventos
+            if (!eventosDia.isEmpty()) {
+                dayPane.setCursor(javafx.scene.Cursor.HAND);
+            }
 
             calendarGrid.add(dayPane, col, row);
             col++;
             if (col > 6) {
                 col = 0;
                 row++;
+            }
+        }
+    }
+
+    /**
+     * Actualiza automáticamente el estado de los eventos según la fecha actual.
+     * - Eventos cuya fecha fin (fechaInicio + duracionEstimada - 1) es anterior a hoy se marcan como FINALIZADOS
+     * - Eventos cuya fecha inicio es hoy o anterior y fecha fin es posterior a hoy se marcan como EN_CURSO
+     */
+    private void actualizarEstadosEventos() {
+        RepositorioEvento repo = new RepositorioEvento();
+        LocalDate hoy = LocalDate.now();
+        
+        // Obtener todos los eventos que no estén ya FINALIZADOS o CANCELADOS
+        List<Evento> eventos = repo.buscarTodos().stream()
+            .filter(e -> e.getEstadoEvento() != EstadoEvento.FINALIZADO && 
+                        e.getEstadoEvento() != EstadoEvento.CANCELADO)
+            .collect(Collectors.toList());
+        
+        for (Evento evento : eventos) {
+            LocalDate fechaInicio = evento.getFechaInicio();
+            LocalDate fechaFin = fechaInicio.plusDays(evento.getDuracionEstimada() - 1);
+            
+            // Si la fecha fin ya pasó, marcar como FINALIZADO
+            if (fechaFin.isBefore(hoy)) {
+                evento.setEstadoEvento(EstadoEvento.FINALIZADO);
+                repo.actualizar(evento);
+                System.out.println("Evento finalizado automáticamente: " + evento.getNombre());
+            }
+            // Si ya inició pero no terminó, marcar como EN_CURSO (solo si está CONFIRMADO)
+            else if (evento.getEstadoEvento() == EstadoEvento.CONFIRMADO && 
+                    !fechaInicio.isAfter(hoy) && fechaFin.isAfter(hoy)) {
+                evento.setEstadoEvento(EstadoEvento.EN_EJECUCION);
+                repo.actualizar(evento);
+                System.out.println("Evento marcado en curso automáticamente: " + evento.getNombre());
             }
         }
     }
@@ -132,15 +190,6 @@ public class MainController {
     private void nextMonth(ActionEvent event) {
         currentYearMonth = currentYearMonth.plusMonths(1);
         showCalendar(currentYearMonth);
-    }
-
-    /**
-     * Abre el formulario para crear un nuevo evento.
-     */
-    @FXML
-    private void nuevoEvento(ActionEvent event) {
-        // Implementar la lógica para crear un nuevo evento
-        System.out.println("Crear nuevo evento");
     }
 
     /**
@@ -163,28 +212,6 @@ public class MainController {
             mostrarError("Error al abrir la gestión de eventos", e.getMessage());
         }
         System.out.println("Gestionar eventos");
-    }
-
-    /**
-     * Abre el formulario para crear una nueva persona.
-     */
-    @FXML
-    private void nuevaPersona(ActionEvent event) {
-        try {
-            // Cargar la vista del formulario de persona
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/personas/FormularioPersonaView.fxml"));
-            Parent root = loader.load();
-            
-            // Configurar y mostrar la ventana
-            Stage stage = new Stage();
-            stage.setTitle("Nueva Persona");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL); // Modal para bloquear ventana principal
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarError("Error al abrir el formulario de personas", e.getMessage());
-        }
     }
 
     /**
