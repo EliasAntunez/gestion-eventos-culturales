@@ -75,6 +75,7 @@ public class FormularioEventoController implements Initializable {
     
     // Campos específicos - Exposición
     @FXML private ComboBox<TipoArte> cmbTipoArte;
+    @FXML private ComboBox<Persona> cmbCurador;
     
     // Campos específicos - Feria
     @FXML private TextField txtCantidadStands;
@@ -150,6 +151,7 @@ public class FormularioEventoController implements Initializable {
 
         // Cargar lista de personas para el ComboBox
         cargarPersonas();
+        configurarComboBoxCurador();
         
         // Establecer estilo para el label de información
         lblOrganizadoresInfo.getStyleClass().add("nota-obligatorio");
@@ -208,6 +210,33 @@ public class FormularioEventoController implements Initializable {
                 }
             };
         colAccion.setCellFactory(cellFactory);
+    }
+
+    private void configurarComboBoxCurador() {
+        // Usar las personas ya cargadas para el ComboBox de organizadores
+        if (cmbPersonas.getItems() != null && !cmbPersonas.getItems().isEmpty()) {
+            cmbCurador.setItems(FXCollections.observableArrayList(cmbPersonas.getItems()));
+        } else {
+            List<Persona> personas = personaService.buscarTodas();
+            cmbCurador.setItems(FXCollections.observableArrayList(personas));
+        }
+        
+        // Configurar cómo se muestran las personas en el ComboBox
+        cmbCurador.setCellFactory(lv -> new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+        
+        cmbCurador.setButtonCell(new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
     }
 
     /**
@@ -383,6 +412,18 @@ public class FormularioEventoController implements Initializable {
      */
     private void cargarDatosExposicion(Exposicion exposicion) {
         cmbTipoArte.setValue(exposicion.getTipoArte());
+        
+        // Buscar el curador entre las participaciones si el evento ya existe
+        if (exposicion.getId() != null) {
+            try {
+                List<Participacion> participaciones = eventoService.buscarPorEventoYRol(exposicion.getId(), RolParticipacion.CURADOR);
+                if (!participaciones.isEmpty()) {
+                    cmbCurador.setValue(participaciones.get(0).getPersona());
+                }
+            } catch (Exception e) {
+                mostrarError("Error al cargar curador: " + e.getMessage());
+            }
+        }
     }
     
     /**
@@ -617,21 +658,43 @@ public class FormularioEventoController implements Initializable {
         }
         
         TipoArte tipoArte = cmbTipoArte.getValue();
+        Persona curador = cmbCurador.getValue();
+        
+        Exposicion exposicion;
         
         if (esEdicion && eventoEditando instanceof Exposicion) {
             // Actualizar existente
-            Exposicion exposicion = (Exposicion) eventoEditando;
+            exposicion = (Exposicion) eventoEditando;
             exposicion.setNombre(nombre);
             exposicion.setFechaInicio(fechaInicio);
             exposicion.setDuracionEstimada(duracionEstimada);
             exposicion.setEstadoEvento(estadoEvento);
             exposicion.setPermiteInscripcion(permiteInscripcion);
             exposicion.setTipoArte(tipoArte);
-            return exposicion;
         } else {
             // Crear nuevo
-            return new Exposicion(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoArte);
+            exposicion = new Exposicion(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoArte);
         }
+        
+        // Guardar primero el evento para que tenga un ID
+        Exposicion exposicionGuardada = (Exposicion) eventoService.guardar(exposicion);
+        
+        try {
+            // Si es edición, eliminar el curador anterior si existe
+            if (esEdicion) {
+                List<Participacion> participacionesCurador = eventoService.buscarPorEventoYRol(exposicionGuardada.getId(), RolParticipacion.CURADOR);
+                for (Participacion p : participacionesCurador) {
+                    eventoService.eliminarParticipacion(exposicionGuardada.getId(), p.getPersona().getId());
+                }
+            }
+            
+            // Agregar el curador como participación
+            eventoService.agregarParticipacion(exposicionGuardada.getId(), curador, RolParticipacion.CURADOR);
+        } catch (Exception e) {
+            mostrarError("Error al asignar el curador: " + e.getMessage());
+        }
+        
+        return exposicionGuardada;
     }
     
     /**
@@ -823,11 +886,19 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposExposicion() {
-        limpiarEstilosCampos(cmbTipoArte);
+        limpiarEstilosCampos(cmbTipoArte, cmbCurador);
+        
         // Validar tipo de arte
         if (cmbTipoArte.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de arte");
             cmbTipoArte.getStyleClass().add("campo-invalido");
+            return false;
+        }
+        
+        // Validar curador
+        if (cmbCurador.getValue() == null) {
+            mostrarError("Debe seleccionar un curador para la exposición");
+            cmbCurador.getStyleClass().add("campo-invalido");
             return false;
         }
         

@@ -3,6 +3,10 @@ package com.gestioneventos.model.eventos;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import com.gestioneventos.model.participaciones.Participacion;
+import com.gestioneventos.model.participaciones.RolParticipacion;
+import com.gestioneventos.model.personas.Persona;
+
 @Entity
 @Table(name = "exposiciones")
 public class Exposicion extends Evento {
@@ -34,6 +38,14 @@ public class Exposicion extends Evento {
         }
         this.tipoArte = tipoArte;
     }
+
+    public Persona getCurador() {
+        return getParticipaciones().stream()
+                .filter(p -> p.getRol() == RolParticipacion.CURADOR)
+                .findFirst()
+                .map(Participacion::getPersona)
+                .orElse(null);
+    }
     
     @Override
     public String obtenerDescripcionEspecifica() {
@@ -46,6 +58,11 @@ public class Exposicion extends Evento {
         if (getParticipaciones().stream().noneMatch(p -> 
                 p.getRol() == com.gestioneventos.model.participaciones.RolParticipacion.ARTISTA)) {
             throw new IllegalStateException("La exposición requiere al menos un artista");
+        }
+
+        if (getCurador() == null) {
+            throw new IllegalStateException("La exposición debe tener un curador asignado");
+            
         }
     }
 }
