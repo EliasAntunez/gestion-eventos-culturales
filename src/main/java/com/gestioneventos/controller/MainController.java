@@ -1,6 +1,8 @@
 // c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\controller\MainController.java
 package com.gestioneventos.controller;
 
+import com.gestioneventos.model.eventos.Evento;
+import com.gestioneventos.repositorio.RepositorioEvento;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +14,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Line;
+import javafx.scene.paint.Color;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controlador principal de la aplicación.
@@ -52,25 +58,62 @@ public class MainController {
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue(); // 1 = lunes, 7 = domingo
         int daysInMonth = yearMonth.lengthOfMonth();
 
+        RepositorioEvento repo = new RepositorioEvento();
+        List<Evento> eventosMes = repo.buscarTodos().stream()
+            .filter(e -> e.getFechaInicio().getMonthValue() == yearMonth.getMonthValue() && e.getFechaInicio().getYear() == yearMonth.getYear())
+            .collect(Collectors.toList());
+
         int col = dayOfWeek - 1;
         int row = 0;
 
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate date = yearMonth.atDay(day);
-            Label dayLabel = new Label(String.valueOf(day));
-            dayLabel.setMinSize(28, 28);
-            dayLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            dayLabel.setStyle("-fx-alignment: center; -fx-font-size: 14px; -fx-text-alignment: center; -fx-alignment: center;");
+            // Buscar eventos activos en este día
+            List<Evento> eventosDia = eventosMes.stream()
+                .filter(e -> {
+                    LocalDate inicio = e.getFechaInicio();
+                    LocalDate fin = inicio.plusDays(e.getDuracionEstimada() - 1);
+                    return !date.isBefore(inicio) && !date.isAfter(fin);
+                })
+                .collect(Collectors.toList());
 
-            // Resalta el día actual
+            StackPane dayPane = new StackPane();
+            dayPane.setMinSize(28, 28);
+            dayPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            dayPane.setStyle("-fx-alignment: center;");
+
+            Label dayLabel = new Label(String.valueOf(day));
+            dayLabel.setStyle("-fx-font-size: 14px; -fx-text-alignment: center; -fx-alignment: center;");
             if (date.equals(today)) {
-                dayLabel.setStyle(dayLabel.getStyle() +
-                "-fx-background-color: #5bc0be; -fx-text-fill: white; -fx-background-radius: 20px;");
+                dayLabel.setStyle(dayLabel.getStyle() + "-fx-background-color: #5bc0be; -fx-text-fill: white; -fx-background-radius: 20px;");
             }
 
-            StackPane cell = new StackPane(dayLabel);
-            calendarGrid.add(cell, col, row);
+            // Línea a la izquierda si hay eventos activos en este día
+            if (!eventosDia.isEmpty()) {
+                Color lineColor = date.isBefore(today) ? Color.RED : Color.web("#5bc0be");
+                Line leftLine = new Line(0, 0, 0, 18); // Altura ajustable
+                leftLine.setStroke(lineColor);
+                leftLine.setStrokeWidth(4);
+                leftLine.setTranslateX(-12);
+                dayPane.getChildren().add(leftLine);
+            }
+            dayPane.getChildren().add(dayLabel);
 
+            // Acción al hacer click: mostrar eventos activos en el día
+            dayPane.setOnMouseClicked(e -> {
+                if (!eventosDia.isEmpty()) {
+                    String eventosStr = eventosDia.stream()
+                        .map(ev -> ev.getNombre())
+                        .collect(Collectors.joining("\n"));
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                    alert.setTitle("Eventos del día");
+                    alert.setHeaderText("Eventos para el " + date);
+                    alert.setContentText(eventosStr);
+                    alert.showAndWait();
+                }
+            });
+
+            calendarGrid.add(dayPane, col, row);
             col++;
             if (col > 6) {
                 col = 0;
