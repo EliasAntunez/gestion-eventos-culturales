@@ -1,7 +1,6 @@
 // c:\2025 POO I - Trabajo Integrador\gestion-eventos-culturales\src\main\java\com\gestioneventos\controller\MainController.java
 package com.gestioneventos.controller;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -90,12 +89,6 @@ public class MainController {
     private void nextMonth(ActionEvent event) {
         currentYearMonth = currentYearMonth.plusMonths(1);
         showCalendar(currentYearMonth);
-    }
-
-    // === Menú y navegación ===
-    @FXML
-    private void salir(ActionEvent event) {
-        Platform.exit();
     }
 
     /**
