@@ -254,4 +254,13 @@ public class ServicioEvento {
         
         return eventos;
     }
+
+    //buscar por persona y rol:
+    public List<Participacion> buscarPorEventoYRol(Long eventoId, RolParticipacion rol) {
+        if (eventoId == null || rol == null) {
+            throw new IllegalArgumentException("El ID del evento y el rol no pueden ser nulos");
+        }
+        
+        return repositorioParticipacion.buscarPorEventoIdYRol(eventoId, rol);
+    }
 }

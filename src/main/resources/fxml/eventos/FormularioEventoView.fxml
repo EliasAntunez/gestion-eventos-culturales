@@ -282,13 +282,11 @@
                                  <RowConstraints minHeight="30.0" prefHeight="35.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                               <children>
-                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                    <children>
-                                       <Label text="Tipo de Arte:" />
-                                       <Label styleClass="campo-obligatorio" text="*" />
-                                    </children>
-                                 </HBox>
-                                 <ComboBox fx:id="cmbTipoArte" prefWidth="250.0" GridPane.columnIndex="1" />
+                                 <Label text="Tipo de Arte:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                 <ComboBox fx:id="cmbTipoArte" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                 
+                                 <Label text="Curador:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                 <ComboBox fx:id="cmbCurador" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               </children>
                               <padding>
                                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
