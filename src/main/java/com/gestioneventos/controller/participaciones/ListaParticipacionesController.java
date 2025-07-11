@@ -263,6 +263,12 @@ public class ListaParticipacionesController implements Initializable {
     private void nuevoParticipante() {
         if (evento == null) return;
         try {
+            // Verificar si el evento permite inscripciones
+            if (!evento.getPermiteInscripcion()) {
+                mostrarMensajeError("No requiere inscripciones", 
+                    "El evento " + evento.getNombre() + " no requiere inscripciones");
+                return;
+            }
             // Cargar el formulario de nuevo participante
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/participaciones/FormularioParticipacionesView.fxml"));
             Parent root = loader.load();
@@ -315,7 +321,7 @@ public class ListaParticipacionesController implements Initializable {
         // Si no es un rol crítico, se puede eliminar sin verificar
         if (rolParaEliminar != RolParticipacion.ORGANIZADOR && 
             rolParaEliminar != RolParticipacion.ARTISTA && 
-            rolParaEliminar != RolParticipacion.INSTRUCTOR) {
+            rolParaEliminar != RolParticipacion.INSTRUCTOR && rolParaEliminar != RolParticipacion.CURADOR) {
             confirmarYEliminarParticipacion(participacion);
             return;
         }
