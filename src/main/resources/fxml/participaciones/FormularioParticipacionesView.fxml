@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17" 
+<BorderPane prefHeight="600.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/17" 
             stylesheets="@/css/participaciones/styles-formularioparticipaciones.css" 
             xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.gestioneventos.controller.participaciones.FormularioParticipacionesController">
@@ -15,7 +15,7 @@
                 <!-- Encabezado -->
                 <HBox alignment="CENTER_LEFT" styleClass="titulo-formulario">
                     <children>
-                        <Label fx:id="lblTitulo" text="Agregar Participante" styleClass="titulo-vista" />
+                        <Label fx:id="lblTitulo" text="Agregar Participantes" styleClass="titulo-vista" />
                     </children>
                 </HBox>
                 
@@ -54,41 +54,47 @@
     </top>
     
     <center>
-        <!-- Selección de persona -->
-        <VBox spacing="15.0" BorderPane.alignment="CENTER">
+        <!-- Contenido principal - Usa un VBox que ocupe todo el espacio disponible -->
+        <VBox spacing="15.0" VBox.vgrow="ALWAYS" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Buscar personas para agregar como participantes:" styleClass="label-subtitle" />
+                <Label text="Seleccione personas para agregar como participantes:" styleClass="label-subtitle" />
                 
-                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <!-- Selección de personas -->
+                <VBox spacing="10.0" styleClass="grid-section" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
                     <children>
-                        <TextField fx:id="txtBuscarPersona" promptText="Nombre, apellido o DNI" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="btnBuscar" text="Buscar" onAction="#buscarPersonas"/>
-                    </children>
-                </HBox>
-                
-                <!-- Lista de personas disponibles -->
-                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
-                    <children>
-                        <Label text="Seleccione una persona para agregarla como participante:" />
-                        <TableView fx:id="tablaPersonas" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                                <ComboBox fx:id="cmbPersonas" promptText="Seleccione una persona" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="btnAgregarParticipante" text="Agregar a la lista" onAction="#agregarParticipanteSeleccionado" styleClass="btn-secondary" />
+                            </children>
+                        </HBox>
+                        
+                        <Label text="Participantes seleccionados:" />
+                        
+                        <!-- TableView para participantes seleccionados - AHORA CRECE VERTICALMENTE -->
+                        <TableView fx:id="tablaParticipantesSeleccionados" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
-                                <TableColumn fx:id="colNombre" prefWidth="120.0" text="Nombre" />
-                                <TableColumn fx:id="colApellido" prefWidth="120.0" text="Apellido" />
+                                <TableColumn fx:id="colNombre" prefWidth="150.0" text="Nombre" />
+                                <TableColumn fx:id="colApellido" prefWidth="150.0" text="Apellido" />
                                 <TableColumn fx:id="colDni" prefWidth="100.0" text="DNI" />
-                                <TableColumn fx:id="colEmail" prefWidth="180.0" text="Email" />
+                                <TableColumn fx:id="colAccion" prefWidth="100.0" text="Acción" />
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                             </columnResizePolicy>
                         </TableView>
+                        
+                        <Label fx:id="lblParticipantesInfo" styleClass="info-text" text="Debe seleccionar al menos un participante" />
                     </children>
                 </VBox>
                 
                 <!-- Nota informativa -->
                 <HBox alignment="CENTER_LEFT" styleClass="info-nota">
                     <children>
-                        <Label text="Nota: La persona seleccionada se agregará como participante (asistente) del evento." wrapText="true" />
+                        <Label text="Nota: Las personas seleccionadas se agregarán como participantes (asistentes) del evento." wrapText="true" />
                     </children>
                 </HBox>
             </children>
@@ -103,7 +109,7 @@
         <HBox alignment="CENTER_RIGHT" spacing="15.0" BorderPane.alignment="CENTER">
             <children>
                 <Label fx:id="lblMensaje" styleClass="mensaje-error" HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnAgregar" mnemonicParsing="false" text="Agregar como Participante" onAction="#agregarParticipante" />
+                <Button fx:id="btnAgregar" mnemonicParsing="false" text="Agregar Participantes" onAction="#agregarParticipantes" styleClass="btn-primary" />
                 <Button fx:id="btnCancelar" mnemonicParsing="false" text="Cancelar" onAction="#cancelar"/>
             </children>
             <padding>
