@@ -1,120 +1,35 @@
-/* === ESTILOS PARA EL FORMULARIO DE PARTICIPACIÓN === */
+/* === ESTILOS PARA EL FORMULARIO DE PARTICIPACIONES === */
 .root {
     -fx-font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     font-family: "Segoe UI", Arial, Helvetica, sans-serif;
     -fx-background-color: #f0f4f8;
     background-color: #f0f4f8;
-    -fx-spacing: 10px;
 }
 
-.titulo-formulario {
-    -fx-background-color: #3a506b;
-    background-color: #3a506b;
-    -fx-padding: 14px 20px 14px 20px;
-    padding: 14px 20px 14px 20px;
-    -fx-background-radius: 8px 8px 0 0;
-}
-
-.titulo-vista {
-    -fx-font-size: 18px;
-    font-size: 18px;
-    -fx-font-weight: bold;
-    font-weight: bold;
-    -fx-text-fill: #ffffff;
-}
-
+/* Botones */
 .button {
+    -fx-background-color: #57585a;
+    background-color: #57585a;
+    -fx-text-fill: #fff;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    padding: 8px 16px;
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-cursor: hand;
     cursor: pointer;
-    -fx-background-radius: 4px;
-    -fx-padding: 8px 16px;
-    padding: 8px 16px;
-    -fx-border-color: transparent;
-    border-color: transparent;
 }
 
-.info-evento {
-    -fx-background-color: #f8f9fa;
-    background-color: #f8f9fa;
-    -fx-background-radius: 6px;
-    -fx-padding: 15px;
-    padding: 15px;
-    -fx-border-color: #dee2e6;
-    border-color: #dee2e6;
-    -fx-border-radius: 6px;
-    border-radius: 6px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 5, 0, 0, 2);
-}
-
-.label-subtitle {
-    -fx-font-size: 16px;
-    font-size: 16px;
+/* Título */
+.titulo-formulario {
+    -fx-font-size: 18px;
+    font-size: 18px;
     -fx-font-weight: bold;
     font-weight: bold;
     -fx-text-fill: #3a506b;
-    -fx-padding: 5px 0 8px 0;
-    padding: 5px 0 8px 0;
 }
 
-.info-nota {
-    -fx-background-color: #f8f9fa;
-    background-color: #f8f9fa;
-    -fx-background-radius: 6px;
-    -fx-padding: 10px;
-    padding: 10px;
-    -fx-border-color: #b8c1ec;
-    border-color: #b8c1ec;
-    -fx-border-radius: 6px;
-    border-radius: 6px;
-}
-
-.mensaje-error {
-    -fx-text-fill: red;
-    -fx-font-weight: bold;
-    font-weight: bold;
-}
-
-.table-view {
-    -fx-background-color: white;
-    background-color: white;
-    -fx-background-radius: 6px;
-    -fx-border-color: #dee2e6;
-    border-color: #dee2e6;
-    -fx-border-radius: 6px;
-    border-radius: 6px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 1);
-}
-
-.table-view .column-header {
-    -fx-background-color: #3a506b;
-    background-color: #3a506b;
-    -fx-padding: 8px;
-    padding: 8px;
-}
-
-.table-view .column-header .label {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    font-weight: bold;
-}
-
-.table-row-cell:selected {
-    -fx-background-color: #b8c1ec;
-    background-color: #b8c1ec;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: #f8f9fa;
-    background-color: #f8f9fa;
-}
-
-.table-row-cell:even {
-    -fx-background-color: white;
-    background-color: white;
-}
-
+/* Botones específicos */
 #btnAgregar {
     -fx-background-color: #26a103;
     background-color: #26a103;
@@ -139,17 +54,56 @@
     -fx-text-fill: #000000;
 }
 
-#btnBuscar {
-    -fx-background-color: #3a506b;
-    background-color: #3a506b;
-    -fx-text-fill: white;
+#btnAgregarParticipante {
+    -fx-background-color: #4e9af1;
+    background-color: #4e9af1;
+    -fx-text-fill: #fff;
 }
 
-#btnBuscar:hover {
-    -fx-background-color: #5c728f;
-    background-color: #5c728f;
+#btnAgregarParticipante:hover {
+    -fx-background-color: #3a7bc8;
+    background-color: #3a7bc8;
 }
 
+/* Estilos para la clase btn-primary */
+.btn-primary {
+    -fx-background-color: #26a103;
+    background-color: #26a103;
+    -fx-text-fill: #fff;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #5bd33a;
+    background-color: #5bd33a;
+    -fx-text-fill: #000000;
+}
+
+/* Estilos para la clase btn-secondary */
+.btn-secondary {
+    -fx-background-color: #4e9af1;
+    background-color: #4e9af1;
+    -fx-text-fill: #fff;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #3a7bc8;
+    background-color: #3a7bc8;
+}
+
+/* Estilos para la clase btn-danger */
+.btn-danger {
+    -fx-background-color: #ef476f;
+    background-color: #ef476f;
+    -fx-text-fill: #fff;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #d90429;
+    background-color: #d90429;
+    -fx-text-fill: #000000;
+}
+
+/* TextField */
 .text-field {
     -fx-background-color: #fff;
     background-color: #fff;
@@ -157,24 +111,147 @@
     border-color: #b8c1ec;
     -fx-border-radius: 5px;
     border-radius: 5px;
-    -fx-padding: 8px 10px;
-    padding: 8px 10px;
-    -fx-font-size: 13px;
-    font-size: 13px;
+    -fx-padding: 6px 10px;
+    padding: 6px 10px;
+    -fx-font-size: 14px;
+    font-size: 14px;
 }
 
-.text-field:focused {
-    -fx-border-color: #3a506b;
-    border-color: #3a506b;
-    -fx-border-width: 2px;
-    border-width: 2px;
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+    -fx-padding: 4px;
+    padding: 4px;
 }
 
+/* Campo obligatorio */
+.campo-obligatorio {
+    -fx-text-fill: #d90429;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Mensaje de error */
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Secciones */
+.section-header {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #3a506b;
+    -fx-padding: 5px 0 8px 0;
+    padding: 5px 0 8px 0;
+}
+
+.label-subtitle {
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #3a506b;
+    -fx-padding: 5px 0 8px 0;
+    padding: 5px 0 8px 0;
+}
+
+.grid-section {
+    -fx-background-color: #f8f9fa;
+    background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+}
+
+/* Información del evento */
+.info-evento {
+    -fx-background-color: #f8f9fa;
+    background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 15px;
+    padding: 15px;
+    -fx-border-color: #dee2e6;
+    border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+}
+
+/* Nota informativa */
+.info-nota {
+    -fx-background-color: #f8f9fa;
+    background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    padding: 10px;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 6px;
+    border-radius: 6px;
+}
+
+/* Tabla */
+.table-view {
+    -fx-background-color: #fff;
+    background-color: #fff;
+    -fx-border-color: #b8c1ec;
+    border-color: #b8c1ec;
+    -fx-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #3a506b;
+    background-color: #3a506b;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #f0f4f8;
+    -fx-font-weight: bold;
+    font-weight: bold;
+}
+
+/* Info text */
+.info-text {
+    -fx-font-size: 12px;
+    font-size: 12px;
+    -fx-text-fill: #d90429;
+}
+
+/* Separador */
 .separator {
     -fx-background-color: #b8c1ec;
     background-color: #b8c1ec;
     -fx-opacity: 0.7;
     opacity: 0.7;
-    -fx-padding: 2px 0 2px 0;
-    padding: 2px 0 2px 0;
+}
+
+/* Campo inválido */
+.campo-invalido {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 2px;
+    -fx-background-color: #fff0f0;
+}
+
+/* Scroll pane - quitar borde */
+.scroll-pane {
+    -fx-background-color: transparent;
+    background-color: transparent;
+    -fx-border-color: transparent;
+    border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    background-color: transparent;
 }

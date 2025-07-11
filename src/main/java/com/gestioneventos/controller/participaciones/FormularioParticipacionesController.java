@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -27,10 +28,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-
 /**
  * Controlador para el formulario de agregado de participantes a un evento.
- * Este formulario permite buscar personas y agregarlas como participantes
+ * Este formulario permite seleccionar personas y agregarlas como participantes
  * con el rol fijo de PARTICIPANTE.
  */
 public class FormularioParticipacionesController implements Initializable {
@@ -41,17 +41,15 @@ public class FormularioParticipacionesController implements Initializable {
     @FXML private Label lblFechaEvento;
     @FXML private Label lblTipoEvento;
     
-    // Elementos de búsqueda de personas
-    @FXML private TextField txtBuscarPersona;
-    @FXML private Button btnBuscar;
-    
-    // Elementos de la tabla de personas
-    @FXML private TableView<Persona> tablaPersonas;
-    @FXML private TableColumn<Persona, Long> colId;
+    // Elementos para la gestión de participantes
+    @FXML private ComboBox<Persona> cmbPersonas;
+    @FXML private Button btnAgregarParticipante;
+    @FXML private TableView<Persona> tablaParticipantesSeleccionados;
     @FXML private TableColumn<Persona, String> colNombre;
     @FXML private TableColumn<Persona, String> colApellido;
     @FXML private TableColumn<Persona, String> colDni;
-    @FXML private TableColumn<Persona, String> colEmail;
+    @FXML private TableColumn<Persona, Void> colAccion;
+    @FXML private Label lblParticipantesInfo;
     
     // Elementos de acción
     @FXML private Label lblMensaje;
@@ -60,7 +58,7 @@ public class FormularioParticipacionesController implements Initializable {
     
     // Datos del controlador
     private Evento evento;
-    private ObservableList<Persona> personasObservables = FXCollections.observableArrayList();
+    private ObservableList<Persona> participantesSeleccionados = FXCollections.observableArrayList();
     
     // Servicios
     private final ServicioPersona personaService;
@@ -82,46 +80,77 @@ public class FormularioParticipacionesController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        configurarTablaPersonas();
-        cargarPersonas();
+        // Configurar la tabla de participantes seleccionados
+        configurarTablaParticipantes();
         
         // Configuración inicial de botones
         btnAgregar.setDisable(true);
         
         // Listener para habilitar/deshabilitar botón de agregar según selección
-        tablaPersonas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            btnAgregar.setDisable(newVal == null);
+        participantesSeleccionados.addListener((javafx.collections.ListChangeListener.Change<? extends Persona> c) -> {
+            btnAgregar.setDisable(participantesSeleccionados.isEmpty());
+            actualizarMensajeInfoParticipantes();
         });
         
-        // Configurar acción del botón buscar
-        btnBuscar.setOnAction(event -> buscarPersonas());
-        
-        // Configurar acción de los botones principales
-        btnAgregar.setOnAction(event -> agregarParticipante());
+        // Configurar acciones de los botones
+        btnAgregarParticipante.setOnAction(event -> agregarParticipanteSeleccionado());
+        btnAgregar.setOnAction(event -> agregarParticipantes());
         btnCancelar.setOnAction(event -> cancelar());
         
-        // Configurar evento Enter en campo de búsqueda
-        txtBuscarPersona.setOnAction(event -> buscarPersonas());
+        // Establecer estilo para el label de información
+        lblParticipantesInfo.getStyleClass().add("nota-obligatorio");
     }
 
     /**
-     * Configura las columnas de la tabla de personas.
+     * Configura la tabla de participantes seleccionados.
      */
-    private void configurarTablaPersonas() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+    private void configurarTablaParticipantes() {
+        // Configurar columnas
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
         colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
-        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         
-        tablaPersonas.setItems(personasObservables);
+        // Configurar la columna de acción (botón eliminar)
+        configurarColumnaAccion();
         
-        // Configurar doble clic para agregar participante
-        tablaPersonas.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && tablaPersonas.getSelectionModel().getSelectedItem() != null) {
-                agregarParticipante();
-            }
-        });
+        // Inicializar lista observable
+        tablaParticipantesSeleccionados.setItems(participantesSeleccionados);
+    }
+
+    /**
+     * Configura la columna de acción con botones para eliminar participantes.
+     */
+    private void configurarColumnaAccion() {
+        Callback<TableColumn<Persona, Void>, TableCell<Persona, Void>> cellFactory = 
+            new Callback<TableColumn<Persona, Void>, TableCell<Persona, Void>>() {
+                @Override
+                public TableCell<Persona, Void> call(final TableColumn<Persona, Void> param) {
+                    final TableCell<Persona, Void> cell = new TableCell<Persona, Void>() {
+                        private final Button btn = new Button("Eliminar");
+                        {
+                            btn.setOnAction(event -> {
+                                Persona persona = getTableView().getItems().get(getIndex());
+                                participantesSeleccionados.remove(persona);
+                                actualizarComboBoxPersonas();
+                            });
+                            btn.getStyleClass().add("btn-danger");
+                            btn.setMaxWidth(Double.MAX_VALUE);
+                        }
+
+                        @Override
+                        protected void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+        colAccion.setCellFactory(cellFactory);
     }
 
     /**
@@ -163,133 +192,181 @@ public class FormularioParticipacionesController implements Initializable {
     }
     
     /**
-     * Carga todas las personas disponibles.
+     * Carga todas las personas disponibles para el ComboBox.
      */
     private void cargarPersonas() {
-    try {
-        System.out.println("Cargando personas para el evento: " + (evento != null ? evento.getId() : "null"));
-        
-        List<Persona> todasLasPersonas = personaService.buscarTodas();
-        System.out.println("Total de personas encontradas: " + todasLasPersonas.size());
-        
-        // Filtrar personas que ya son participantes de este evento
-        List<Participacion> participacionesExistentes = participacionService.buscarPorEvento(evento.getId());
-        System.out.println("Total de participaciones existentes: " + participacionesExistentes.size());
-        
-        List<Long> idsPersonasParticipantes = participacionesExistentes.stream()
-            .map(p -> p.getPersona().getId())
-            .collect(Collectors.toList());
-        
-        // Mostrar solo personas que no sean ya participantes
-        List<Persona> personasDisponibles = todasLasPersonas.stream()
-            .filter(p -> !idsPersonasParticipantes.contains(p.getId()))
-            .collect(Collectors.toList());
-        
-        System.out.println("Personas disponibles para agregar: " + personasDisponibles.size());
-        
-        personasObservables.clear();
-        personasObservables.addAll(personasDisponibles);
-        
-        actualizarMensajeResultados(personasDisponibles.size());
-    } catch (Exception e) {
-            e.printStackTrace();
-            mostrarErrorEnUI("Error al cargar personas: " + e.getMessage());
-        }
-}
-    
-    /**
-     * Busca personas según el criterio ingresado.
-     */
-    @FXML
-    private void buscarPersonas() {
-        String criterioBusqueda = txtBuscarPersona.getText().trim();
-        
         try {
-            List<Persona> personasEncontradas;
+            // Obtener todas las personas
+            List<Persona> todasLasPersonas = personaService.buscarTodas();
             
-            // Si no hay criterio de búsqueda, mostrar todas
-            if (criterioBusqueda.isEmpty()) {
-                personasEncontradas = personaService.buscarTodas();
-            } else {
-                // Buscar por nombre, apellido o DNI
-                personasEncontradas = personaService.buscar(criterioBusqueda);
-            }
-            
-            // Filtrar personas que ya son participantes
+            // Filtrar personas que ya son participantes de este evento
             List<Participacion> participacionesExistentes = participacionService.buscarPorEvento(evento.getId());
             List<Long> idsPersonasParticipantes = participacionesExistentes.stream()
                 .map(p -> p.getPersona().getId())
                 .collect(Collectors.toList());
             
-            List<Persona> personasDisponibles = personasEncontradas.stream()
+            // Mostrar solo personas que no sean ya participantes
+            List<Persona> personasDisponibles = todasLasPersonas.stream()
                 .filter(p -> !idsPersonasParticipantes.contains(p.getId()))
                 .collect(Collectors.toList());
             
-            personasObservables.clear();
-            personasObservables.addAll(personasDisponibles);
+            actualizarComboBoxConPersonas(personasDisponibles);
             
-            actualizarMensajeResultados(personasDisponibles.size());
+            // Actualizar mensaje informativo
+            actualizarMensajeInfoParticipantes();
+            
+            // Mostrar mensaje si no hay personas disponibles
+            if (personasDisponibles.isEmpty()) {
+                lblMensaje.setText("No hay personas disponibles para agregar como participantes");
+            } else {
+                lblMensaje.setText("");
+            }
             
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarErrorEnUI("Error en la búsqueda: " + e.getMessage());
+            mostrarErrorEnUI("Error al cargar personas: " + e.getMessage());
         }
     }
     
     /**
-     * Actualiza el mensaje que muestra la cantidad de resultados.
+     * Actualiza el ComboBox de personas con la lista proporcionada y configura su formato.
      */
-    private void actualizarMensajeResultados(int cantidad) {
-        if (cantidad == 0) {
-            lblMensaje.setText("No se encontraron personas disponibles");
-        } else {
-            lblMensaje.setText("");
+    private void actualizarComboBoxConPersonas(List<Persona> personas) {
+        // Cargar en el ComboBox
+        cmbPersonas.setItems(FXCollections.observableArrayList(personas));
+        
+        // Configurar cómo se muestran las personas en el ComboBox
+        cmbPersonas.setCellFactory(lv -> new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+        
+        cmbPersonas.setButtonCell(new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+    }
+    
+    /**
+     * Actualiza el ComboBox eliminando las personas ya seleccionadas.
+     */
+    private void actualizarComboBoxPersonas() {
+        try {
+            // Obtener todas las personas
+            List<Persona> todasLasPersonas = personaService.buscarTodas();
+            
+            // Filtrar personas que ya son participantes de este evento
+            List<Participacion> participacionesExistentes = participacionService.buscarPorEvento(evento.getId());
+            List<Long> idsPersonasParticipantes = participacionesExistentes.stream()
+                .map(p -> p.getPersona().getId())
+                .collect(Collectors.toList());
+            
+            // Filtrar también las personas ya seleccionadas
+            List<Long> idsPersonasSeleccionadas = participantesSeleccionados.stream()
+                .map(Persona::getId)
+                .collect(Collectors.toList());
+            
+            // Mostrar solo personas disponibles
+            List<Persona> personasDisponibles = todasLasPersonas.stream()
+                .filter(p -> !idsPersonasParticipantes.contains(p.getId()) && !idsPersonasSeleccionadas.contains(p.getId()))
+                .collect(Collectors.toList());
+            
+            actualizarComboBoxConPersonas(personasDisponibles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarErrorEnUI("Error al actualizar lista de personas: " + e.getMessage());
         }
     }
     
     /**
-     * Agrega la persona seleccionada como participante del evento.
+     * Actualiza el mensaje informativo sobre participantes seleccionados.
+     */
+    private void actualizarMensajeInfoParticipantes() {
+        int cantidadParticipantes = participantesSeleccionados.size();
+        if (cantidadParticipantes == 0) {
+            lblParticipantesInfo.setText("Debe seleccionar al menos un participante");
+            lblParticipantesInfo.getStyleClass().add("error-label");
+        } else {
+            lblParticipantesInfo.setText("Participantes seleccionados: " + cantidadParticipantes);
+            lblParticipantesInfo.getStyleClass().remove("error-label");
+        }
+    }
+    
+    /**
+     * Agrega una persona seleccionada del ComboBox a la lista de participantes.
      */
     @FXML
-    private void agregarParticipante() {
-        Persona personaSeleccionada = tablaPersonas.getSelectionModel().getSelectedItem();
+    private void agregarParticipanteSeleccionado() {
+        Persona personaSeleccionada = cmbPersonas.getValue();
+        
         if (personaSeleccionada == null) {
-            mostrarErrorEnUI("Debe seleccionar una persona para agregar como participante");
+            mostrarErrorEnUI("Debe seleccionar una persona para agregarla como participante");
+            return;
+        }
+        
+        // Verificar si ya está agregada
+        if (participantesSeleccionados.contains(personaSeleccionada)) {
+            mostrarErrorEnUI("Esta persona ya está agregada como participante");
+            return;
+        }
+        
+        // Agregar a la lista y limpiar mensaje de error
+        participantesSeleccionados.add(personaSeleccionada);
+        lblMensaje.setText("");
+        
+        // Limpiar selección
+        cmbPersonas.setValue(null);
+        
+        // Actualizar combo para eliminar la persona ya seleccionada
+        actualizarComboBoxPersonas();
+    }
+    
+    /**
+     * Agrega todos los participantes seleccionados al evento y cierra el formulario.
+     */
+    @FXML
+    private void agregarParticipantes() {
+        if (participantesSeleccionados.isEmpty()) {
+            mostrarErrorEnUI("Debe seleccionar al menos una persona para agregar como participante");
             return;
         }
         
         try {
-            // Crear nueva participación (siempre con rol PARTICIPANTE)
-            Participacion nuevaParticipacion = new Participacion();
-            nuevaParticipacion.setEvento(evento);
-            nuevaParticipacion.setPersona(personaSeleccionada);
-            nuevaParticipacion.setRol(RolParticipacion.PARTICIPANTE);
-            nuevaParticipacion.setFechaInscripcion(LocalDateTime.now());
+            int participantesAgregados = 0;
             
-            // Guardar la participación
-            participacionService.guardar(nuevaParticipacion);
+            for (Persona persona : participantesSeleccionados) {
+                // Crear nueva participación con rol PARTICIPANTE
+                Participacion nuevaParticipacion = new Participacion();
+                nuevaParticipacion.setEvento(evento);
+                nuevaParticipacion.setPersona(persona);
+                nuevaParticipacion.setRol(RolParticipacion.PARTICIPANTE);
+                nuevaParticipacion.setFechaInscripcion(LocalDateTime.now());
+                
+                // Guardar la participación
+                participacionService.guardar(nuevaParticipacion);
+                participantesAgregados++;
+            }
             
             // Mostrar mensaje de éxito
-            mostrarMensajeExito("Participante agregado con éxito");
+            mostrarMensajeExito(participantesAgregados + " participante(s) agregado(s) con éxito");
             
             // Actualizar la lista de participantes si existe el controlador padre
             if (listaController != null) {
-                listaController.cargarParticipaciones(); // Actualizar la lista de participaciones  
+                listaController.cargarParticipaciones();
             }
             
-            // Eliminar la persona de la tabla
-            personasObservables.remove(personaSeleccionada);
-            
-            // Si no quedan más personas disponibles, cerrar el formulario
-            if (personasObservables.isEmpty()) {
-                mostrarMensajeInformacion("No hay más personas disponibles para agregar", 
-                    "Todas las personas registradas ya son participantes de este evento.");
-                cerrarFormulario();
-            }
+            // Cerrar el formulario
+            cerrarFormulario();
             
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarErrorEnUI("Error al agregar participante: " + e.getMessage());
+            mostrarErrorEnUI("Error al guardar participantes: " + e.getMessage());
         }
     }
     
@@ -322,17 +399,6 @@ public class FormularioParticipacionesController implements Initializable {
     private void mostrarMensajeExito(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Operación exitosa");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-    
-    /**
-     * Muestra un cuadro de diálogo con un mensaje informativo.
-     */
-    private void mostrarMensajeInformacion(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();

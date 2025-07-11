@@ -1,10 +1,10 @@
 package com.gestioneventos.model.eventos;
 
 // Importaciones necesarias
-import jakarta.persistence.*;  // Anotaciones para mapeo objeto-relacional (ORM)
-import java.time.LocalDate;   // API de fechas de Java 8+
-import java.util.ArrayList;   // Colección para manejar relaciones
-import java.util.List;        // Interfaz de colección
+import jakarta.persistence.*; // Anotaciones para mapeo objeto-relacional (ORM)
+import java.time.LocalDate; // API de fechas de Java 8+
+import java.util.ArrayList; // Colección para manejar relaciones
+import java.util.List; // Interfaz de colección
 
 
 import com.gestioneventos.model.participaciones.Participacion;
@@ -13,38 +13,38 @@ import com.gestioneventos.model.participaciones.Participacion;
  * Sirve como base para todos los tipos específicos de eventos.
  * Utiliza JPA para el mapeo a la base de datos.
  */
-@Entity                          // Marca la clase como una entidad JPA (tabla en BD)
-@Table(name = "eventos")         // Especifica el nombre de la tabla en la BD
+@Entity // Marca la clase como una entidad JPA (tabla en BD)
+@Table(name = "eventos")// Especifica el nombre de la tabla en la BD
 @Inheritance(strategy = InheritanceType.JOINED)  // Estrategia de herencia: una tabla por clase con joins
 public abstract class Evento {
     
     // Identificador único del evento, generado automáticamente
-    @Id                                         // Marca este campo como clave primaria
+    @Id // Marca este campo como clave primaria
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Autoincremento manejado por la BD
     private Long id;
     
     // Nombre descriptivo del evento
-    @Column(nullable = false, length = 100)     // El campo no puede ser nulo y tiene longitud máxima
+    @Column(nullable = false, length = 100) // El campo no puede ser nulo y tiene longitud máxima
     private String nombre;
     
     // Fecha en que inicia el evento
-    @Column(nullable = false)                   // El campo no puede ser nulo
+    @Column(nullable = false) // El campo no puede ser nulo
     private LocalDate fechaInicio;
     
     // Duración del evento en días
-    @Column(name = "duracion_dias")             // Nombre personalizado de la columna en BD
+    @Column(name = "duracion_dias") // Nombre personalizado de la columna en BD
     private int duracionEstimada;
     
-    // Estado actual del evento (PLANIFICADO, CONFIRMADO, etc.)
-    @Enumerated(EnumType.STRING)                // Almacena el enum como string en la BD
-    @Column(nullable = false)                   // El campo no puede ser nulo
+    // Estado actual del evento
+    @Enumerated(EnumType.STRING) // Almacena el enum como string en la BD
+    @Column(nullable = false) // El campo no puede ser nulo
     private EstadoEvento estadoEvento;
     
     // Indica si se permiten inscripciones al evento
-    @Column(name = "permite_inscripcion")       // Nombre personalizado de la columna en BD
+    @Column(name = "permite_inscripcion") // Nombre personalizado de la columna en BD
     private boolean permiteInscripcion;
     
-    // Relación con las participaciones (podría implementarse según necesidades)
+    // Relación con las participaciones
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Participacion> participaciones = new ArrayList<>();
     
