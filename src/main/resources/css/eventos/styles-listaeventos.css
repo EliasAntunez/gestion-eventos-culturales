@@ -29,7 +29,7 @@
 }
 
 /* Botones */
-.button, #btnNuevoEvento, #btnEditarEvento, #btnEliminarEvento, #btnVerParticipantes, #btnBuscar {
+.button, #btnNuevoEvento, #btnEditarEvento, #btnEliminarEvento, #btnVerParticipantes {
     -fx-background-color: #57585a;
     background-color: #57585a;
     -fx-text-fill: #fff;
@@ -45,7 +45,8 @@
     -fx-border-color: transparent;
     border-color: transparent;
 }
-.button:hover, #btnNuevoEvento:hover, #btnEditarEvento:hover, #btnEliminarEvento:hover, #btnVerParticipantes:hover, #btnBuscar:hover {
+
+.button:hover, #btnNuevoEvento:hover, #btnEditarEvento:hover, #btnEliminarEvento:hover, #btnVerParticipantes:hover{
     -fx-background-color: #686b6e;
     background-color: #686b6e;
     -fx-text-fill: #000000;
@@ -69,11 +70,11 @@
     -fx-text-fill: #000000;
     color: #000000;
 }
-#btnBuscar {
+#btnBuscarNombre {
     -fx-background-color: #4e9af1;
     background-color: #4e9af1;
 }
-#btnBuscar:hover {
+#btnBuscarNombre:hover {
     -fx-background-color: #3a7bc8;
     background-color: #3a7bc8;
 }
