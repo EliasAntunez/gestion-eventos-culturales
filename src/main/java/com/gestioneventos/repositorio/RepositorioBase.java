@@ -3,6 +3,9 @@ package com.gestioneventos.repositorio;
 import com.gestioneventos.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -10,7 +13,6 @@ import java.util.Optional;
 
 /**
  * Clase base abstracta para repositorios que proporcionan operaciones CRUD genéricas.
- * Esta clase reemplaza el concepto de interfaz GenericDAO con una implementación concreta.
  * 
  * @param <T> Tipo de entidad a manipular
  * @param <ID> Tipo del identificador de la entidad
@@ -73,7 +75,29 @@ public abstract class RepositorioBase<T, ID> {
     }
     
     /**
-     * Busca una entidad por su ID.
+     * Guarda o actualiza una entidad dependiendo si tiene id o no.
+     * @param entidad Entidad a guardar o actualizar
+     * @return Entidad guardada o actualizada
+     */
+    public T guardarOActualizar(T entidad) {
+        // La implementación depende de cómo se determine si una entidad es nueva o no
+        // Esta implementación se deja a las subclases que conocen su estructura de ID
+        if (esNuevaEntidad(entidad)) {
+            return guardar(entidad);
+        } else {
+            return actualizar(entidad);
+        }
+    }
+    
+    /**
+     * Verifica si una entidad es nueva (no tiene ID asignado)
+     * @param entidad Entidad a verificar
+     * @return true si la entidad es nueva, false si ya existe
+     */
+    protected abstract boolean esNuevaEntidad(T entidad);
+    
+    /**
+     * Busca una entidad por su ID con eager loading de relaciones.
      * @param id Identificador de la entidad
      * @return Optional con la entidad si existe
      */
@@ -81,10 +105,25 @@ public abstract class RepositorioBase<T, ID> {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             T entidad = em.find(entityClass, id);
+            // Método de la subclase para cargar relaciones específicas
+            if (entidad != null) {
+                cargarRelaciones(em, entidad);
+            }
             return Optional.ofNullable(entidad);
         } finally {
             em.close();
         }
+    }
+    
+    /**
+     * Método para cargar relaciones importantes (LazyLoading) de una entidad.
+     * Las subclases deben implementar este método según sus necesidades.
+     * @param em El EntityManager activo
+     * @param entidad La entidad cuyas relaciones se cargarán
+     */
+    protected void cargarRelaciones(EntityManager em, T entidad) {
+        // Por defecto no hace nada, las subclases deben sobrescribir si necesitan
+        // cargar relaciones específicas para prevenir LazyInitializationException
     }
     
     /**
@@ -94,10 +133,71 @@ public abstract class RepositorioBase<T, ID> {
     public List<T> buscarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            // Consulta JPQL genérica para obtener todas las entidades
-            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(entityClass);
+            Root<T> rootEntry = cq.from(entityClass);
+            CriteriaQuery<T> all = cq.select(rootEntry);
+            
+            TypedQuery<T> allQuery = em.createQuery(all);
+            List<T> result = allQuery.getResultList();
+            
+            // Cargar relaciones para prevenir LazyInitializationException
+            for (T entidad : result) {
+                cargarRelaciones(em, entidad);
+            }
+            
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Busca entidades por un campo específico.
+     * @param campo Nombre del campo a buscar
+     * @param valor Valor a buscar
+     * @return Lista de entidades que coinciden con la búsqueda
+     */
+    public List<T> buscarPor(String campo, Object valor) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + campo + " = :valor";
             TypedQuery<T> query = em.createQuery(jpql, entityClass);
-            return query.getResultList();
+            query.setParameter("valor", valor);
+            List<T> result = query.getResultList();
+            
+            // Cargar relaciones para prevenir LazyInitializationException
+            for (T entidad : result) {
+                cargarRelaciones(em, entidad);
+            }
+            
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Busca entidades por coincidencia parcial en un campo string.
+     * @param campo Nombre del campo a buscar
+     * @param texto Texto a buscar (coincidencia parcial)
+     * @return Lista de entidades que coinciden con la búsqueda
+     */
+    public List<T> buscarPorCoincidenciaParcial(String campo, String texto) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + 
+                         " e WHERE LOWER(e." + campo + ") LIKE LOWER(:texto)";
+            TypedQuery<T> query = em.createQuery(jpql, entityClass);
+            query.setParameter("texto", "%" + texto + "%");
+            List<T> result = query.getResultList();
+            
+            // Cargar relaciones para prevenir LazyInitializationException
+            for (T entidad : result) {
+                cargarRelaciones(em, entidad);
+            }
+            
+            return result;
         } finally {
             em.close();
         }
@@ -112,9 +212,6 @@ public abstract class RepositorioBase<T, ID> {
         try {
             em.getTransaction().begin();
             if (!em.contains(entidad)) {
-                // La entidad no está gestionada, hay que obtenerla primero
-                // Esto requiere que la entidad tenga un método getId()
-                // Esta parte puede ser necesaria extenderla en clases hijas
                 entidad = em.merge(entidad);
             }
             em.remove(entidad);
@@ -167,12 +264,33 @@ public abstract class RepositorioBase<T, ID> {
     }
     
     /**
-     * Guarda o actualiza una entidad dependiendo si tiene id o no.
-     * Esta implementación genérica debe ser extendida en subclases
-     * para manejar correctamente la lógica de detección de ID.
-     * 
-     * @param entidad La entidad a guardar o actualizar
-     * @return La entidad guardada o actualizada
+     * Ejecuta una consulta JPQL personalizada que devuelve entidades del tipo T.
+     * @param jpql La consulta JPQL
+     * @param params Los parámetros de la consulta como pares [nombre, valor]
+     * @return Lista de entidades que cumplen la consulta
      */
-    public abstract T guardarOActualizar(T entidad);
+    protected List<T> ejecutarConsulta(String jpql, Object... params) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<T> query = em.createQuery(jpql, entityClass);
+            
+            // Establecer los parámetros
+            for (int i = 0; i < params.length; i += 2) {
+                String paramName = (String) params[i];
+                Object paramValue = params[i + 1];
+                query.setParameter(paramName, paramValue);
+            }
+            
+            List<T> result = query.getResultList();
+            
+            // Cargar relaciones para prevenir LazyInitializationException
+            for (T entidad : result) {
+                cargarRelaciones(em, entidad);
+            }
+            
+            return result;
+        } finally {
+            em.close();
+        }
+    }
 }
