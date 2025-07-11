@@ -68,6 +68,7 @@ public class FormularioEventoController implements Initializable {
     // Campos específicos - Taller
     @FXML private TextField txtCupoMaximo;
     @FXML private ComboBox<Modalidad> cmbModalidad;
+    @FXML private ComboBox<Persona> cmbInstructor;
     
     // Campos específicos - Concierto
     @FXML private TextField txtArtistaPrincipal;
@@ -152,6 +153,7 @@ public class FormularioEventoController implements Initializable {
         // Cargar lista de personas para el ComboBox
         cargarPersonas();
         configurarComboBoxCurador();
+        configurarComboBoxInstructor();
         
         // Establecer estilo para el label de información
         lblOrganizadoresInfo.getStyleClass().add("nota-obligatorio");
@@ -231,6 +233,33 @@ public class FormularioEventoController implements Initializable {
         });
         
         cmbCurador.setButtonCell(new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+    }
+
+    private void configurarComboBoxInstructor() {
+        // Usar las personas ya cargadas para el ComboBox de organizadores
+        if (cmbPersonas.getItems() != null && !cmbPersonas.getItems().isEmpty()) {
+            cmbInstructor.setItems(FXCollections.observableArrayList(cmbPersonas.getItems()));
+        } else {
+            List<Persona> personas = personaService.buscarTodas();
+            cmbInstructor.setItems(FXCollections.observableArrayList(personas));
+        }
+        
+        // Configurar cómo se muestran las personas en el ComboBox
+        cmbInstructor.setCellFactory(lv -> new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+        
+        cmbInstructor.setButtonCell(new ListCell<Persona>() {
             @Override
             protected void updateItem(Persona persona, boolean empty) {
                 super.updateItem(persona, empty);
@@ -395,6 +424,18 @@ public class FormularioEventoController implements Initializable {
     private void cargarDatosTaller(Taller taller) {
         txtCupoMaximo.setText(String.valueOf(taller.getCupoMaximo()));
         cmbModalidad.setValue(taller.getModalidad());
+        
+        // Buscar el instructor entre las participaciones si el evento ya existe
+        if (taller.getId() != null) {
+            try {
+                List<Participacion> participaciones = eventoService.buscarPorEventoYRol(taller.getId(), RolParticipacion.INSTRUCTOR);
+                if (!participaciones.isEmpty()) {
+                    cmbInstructor.setValue(participaciones.get(0).getPersona());
+                }
+            } catch (Exception e) {
+                mostrarError("Error al cargar instructor: " + e.getMessage());
+            }
+        }
     }
     
     /**
@@ -603,10 +644,13 @@ public class FormularioEventoController implements Initializable {
         
         int cupoMaximo = Integer.parseInt(txtCupoMaximo.getText().trim());
         Modalidad modalidad = cmbModalidad.getValue();
+        Persona instructor = cmbInstructor.getValue();
+        
+        Taller taller;
         
         if (esEdicion && eventoEditando instanceof Taller) {
             // Actualizar existente
-            Taller taller = (Taller) eventoEditando;
+            taller = (Taller) eventoEditando;
             taller.setNombre(nombre);
             taller.setFechaInicio(fechaInicio);
             taller.setDuracionEstimada(duracionEstimada);
@@ -614,11 +658,30 @@ public class FormularioEventoController implements Initializable {
             taller.setPermiteInscripcion(permiteInscripcion);
             taller.setCupoMaximo(cupoMaximo);
             taller.setModalidad(modalidad);
-            return taller;
         } else {
             // Crear nuevo
-            return new Taller(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, cupoMaximo, modalidad);
+            taller = new Taller(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, cupoMaximo, modalidad);
         }
+        
+        // Guardar primero el evento para que tenga un ID
+        Taller tallerGuardado = (Taller) eventoService.guardar(taller);
+        
+        try {
+            // Si es edición, eliminar el instructor anterior si existe
+            if (esEdicion) {
+                List<Participacion> participacionesInstructor = eventoService.buscarPorEventoYRol(tallerGuardado.getId(), RolParticipacion.INSTRUCTOR);
+                for (Participacion p : participacionesInstructor) {
+                    eventoService.eliminarParticipacion(tallerGuardado.getId(), p.getPersona().getId());
+                }
+            }
+            
+            // Agregar el instructor como participación
+            eventoService.agregarParticipacion(tallerGuardado.getId(), instructor, RolParticipacion.INSTRUCTOR);
+        } catch (Exception e) {
+            mostrarError("Error al asignar el instructor: " + e.getMessage());
+        }
+        
+        return tallerGuardado;
     }
     
     /**
@@ -852,6 +915,13 @@ public class FormularioEventoController implements Initializable {
         if (cmbModalidad.getValue() == null) {
             mostrarError("Debe seleccionar una modalidad");
             cmbModalidad.getStyleClass().add("campo-invalido");
+            return false;
+        }
+
+        // Validar instructor
+        if (cmbInstructor.getValue() == null) {
+            mostrarError("Debe seleccionar un instructor para el taller");
+            cmbInstructor.getStyleClass().add("campo-invalido");
             return false;
         }
         

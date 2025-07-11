@@ -103,7 +103,7 @@
                               <!-- Permite inscripción -->
                               <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="5">
                                  <children>
-                                    <Label text="¿Permite Inscripción?" />
+                                    <Label text="¿Requiere Inscripción?" />
                                  </children>
                               </HBox>
                               <CheckBox fx:id="chkPermiteInscripcion" mnemonicParsing="false" text="Sí" GridPane.columnIndex="1" GridPane.rowIndex="5" />
@@ -233,6 +233,15 @@
                                     </children>
                                  </HBox>
                                  <ComboBox fx:id="cmbModalidad" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="2">
+                                    <children>
+                                       <Label text="Instructor:" />
+                                       <Label styleClass="campo-obligatorio" text="*" />
+                                    </children>
+                                 </HBox>
+                                 <ComboBox fx:id="cmbInstructor" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
                               </children>
                               <padding>
                                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
