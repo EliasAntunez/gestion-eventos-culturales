@@ -75,25 +75,6 @@
                     </columnConstraints>
                 </GridPane>
             </VBox>
-            <!-- Próximos eventos (derecha) -->
-            <VBox styleClass="events-container" spacing="14" prefWidth="300">
-                <Label text="Próximos Eventos" styleClass="section-title"/>
-                <ListView fx:id="upcomingEventsList" styleClass="events-list"/>
-                <!-- Estadísticas rápidas -->
-                <VBox styleClass="stats-container" spacing="8">
-                    <Label text="Estadísticas" styleClass="section-subtitle"/>
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Circle radius="5" fill="#3a506b"/>
-                        <Label text="Eventos este mes:"/>
-                        <Label fx:id="eventsCountLabel" text="12" styleClass="stat-value"/>
-                    </HBox>
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Circle radius="5" fill="#5bc0be"/>
-                        <Label text="Participantes:"/>
-                        <Label fx:id="participantsCountLabel" text="342" styleClass="stat-value"/>
-                    </HBox>
-                </VBox>
-            </VBox>
         </HBox>
     </center>
 </BorderPane>
