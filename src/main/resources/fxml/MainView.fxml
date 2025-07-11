@@ -18,9 +18,6 @@
             </HBox>
             <!-- Menú debajo del encabezado -->
             <MenuBar styleClass="menu-bar" prefHeight="40.0">
-                <Menu text="Archivo">
-                    <MenuItem text="Salir" onAction="#salir"/>
-                </Menu>
                 <Menu text="Eventos">
                     <MenuItem text="Gestionar eventos" onAction="#gestionarEventos"/>
                 </Menu>

@@ -127,25 +127,32 @@ public class ListaEventosController implements Initializable {
         });
         
         // Columna de detalle específico
+        // En el método configurarColumnas() de ListaEventosController
         colDetalle.setCellValueFactory(cellData -> {
             Evento evento = cellData.getValue();
             String detalle = "";
             
-            if (evento instanceof Cine) {
-                Cine cine = (Cine) evento;
-                detalle = "Película: " + cine.getTituloPelicula();
-            } else if (evento instanceof Taller) {
-                Taller taller = (Taller) evento;
-                detalle = "Cupo: " + taller.getCupoMaximo() + ", " + taller.getModalidad();
-            } else if (evento instanceof Concierto) {
-                Concierto concierto = (Concierto) evento;
-                detalle = "Artista: " + concierto.getArtistaPrincipal();
-            } else if (evento instanceof Exposicion) {
-                Exposicion exposicion = (Exposicion) evento;
-                detalle = "Arte: " + exposicion.getTipoArte();
-            } else if (evento instanceof Feria) {
-                Feria feria = (Feria) evento;
-                detalle = "Stands: " + feria.getCantidadStands();
+            try {
+                if (evento instanceof Cine) {
+                    Cine cine = (Cine) evento;
+                    detalle = "Película: " + cine.getTituloPelicula();
+                } else if (evento instanceof Taller) {
+                    Taller taller = (Taller) evento;
+                    detalle = "Cupo: " + taller.getCupoMaximo() + ", " + taller.getModalidad();
+                } else if (evento instanceof Concierto) {
+                    Concierto concierto = (Concierto) evento;
+                    // Usar el método getArtistasComoTexto que maneja posibles errores de lazy loading
+                    detalle = "Artistas: " + concierto.getArtistasComoTexto();
+                } else if (evento instanceof Exposicion) {
+                    Exposicion exposicion = (Exposicion) evento;
+                    detalle = "Arte: " + exposicion.getTipoArte();
+                } else if (evento instanceof Feria) {
+                    Feria feria = (Feria) evento;
+                    detalle = "Stands: " + feria.getCantidadStands();
+                }
+            } catch (Exception e) {
+                // Si hay algún error (como LazyInitializationException), mostrar mensaje genérico
+                detalle = "Detalles no disponibles";
             }
             
             return new SimpleStringProperty(detalle);

@@ -71,8 +71,18 @@ public class FormularioEventoController implements Initializable {
     @FXML private ComboBox<Persona> cmbInstructor;
     
     // Campos específicos - Concierto
-    @FXML private TextField txtArtistaPrincipal;
     @FXML private ComboBox<TipoEntrada> cmbTipoEntrada;
+    @FXML private TableView<Persona> tablaArtistas;
+    @FXML private TableColumn<Persona, String> colNombreArtista;
+    @FXML private TableColumn<Persona, String> colApellidoArtista;
+    @FXML private TableColumn<Persona, String> colDniArtista;
+    @FXML private TableColumn<Persona, Void> colAccionArtista;
+    @FXML private Label lblArtistasInfo;
+    @FXML private ComboBox<Persona> cmbArtistas;
+    @FXML private Button btnAgregarArtista;
+
+    // Lista observable para los artistas
+    private ObservableList<Persona> artistasSeleccionados;
     
     // Campos específicos - Exposición
     @FXML private ComboBox<TipoArte> cmbTipoArte;
@@ -149,11 +159,13 @@ public class FormularioEventoController implements Initializable {
 
         // Configurar la tabla de organizadores
         configurarTablaOrganizadores();
+        configurarTablaArtistas();  
 
         // Cargar lista de personas para el ComboBox
         cargarPersonas();
         configurarComboBoxCurador();
         configurarComboBoxInstructor();
+        configurarComboBoxArtistas();
         
         // Establecer estilo para el label de información
         lblOrganizadoresInfo.getStyleClass().add("nota-obligatorio");
@@ -178,6 +190,61 @@ public class FormularioEventoController implements Initializable {
         organizadoresSeleccionados = FXCollections.observableArrayList();
         tablaOrganizadores.setItems(organizadoresSeleccionados);
     }
+
+    /**
+     * Configura la tabla de artistas seleccionados.
+     */
+    private void configurarTablaArtistas() {
+        // Configurar columnas
+        colNombreArtista.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colApellidoArtista.setCellValueFactory(new PropertyValueFactory<>("apellido"));
+        colDniArtista.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        
+        // Configurar la columna de acción (botón eliminar)
+        configurarColumnaAccionArtistas();
+        
+        // Inicializar lista observable
+        artistasSeleccionados = FXCollections.observableArrayList();
+        tablaArtistas.setItems(artistasSeleccionados);
+    }
+
+    /**
+     * Configura la columna de acción con botones para eliminar artistas.
+     */
+    private void configurarColumnaAccionArtistas() {
+        Callback<TableColumn<Persona, Void>, TableCell<Persona, Void>> cellFactory = 
+            new Callback<TableColumn<Persona, Void>, TableCell<Persona, Void>>() {
+                @Override
+                public TableCell<Persona, Void> call(final TableColumn<Persona, Void> param) {
+                    final TableCell<Persona, Void> cell = new TableCell<Persona, Void>() {
+                        private final Button btn = new Button("Eliminar");
+                        {
+                            btn.setOnAction(event -> {
+                                Persona persona = getTableView().getItems().get(getIndex());
+                                artistasSeleccionados.remove(persona);
+                                actualizarMensajeInfoArtistas();
+                            });
+                            btn.getStyleClass().add("btn-danger");
+                            btn.setMaxWidth(Double.MAX_VALUE);
+                        }
+
+                        @Override
+                        protected void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+        colAccionArtista.setCellFactory(cellFactory);
+    }
+
+
 
     /**
      * Configura la columna de acción con botones para eliminar organizadores.
@@ -268,6 +335,39 @@ public class FormularioEventoController implements Initializable {
         });
     }
 
+
+    /**
+     * Configura el ComboBox de artistas.
+     */
+    private void configurarComboBoxArtistas() {
+        // Usar las personas ya cargadas para el ComboBox de organizadores
+        if (cmbPersonas.getItems() != null && !cmbPersonas.getItems().isEmpty()) {
+            cmbArtistas.setItems(FXCollections.observableArrayList(cmbPersonas.getItems()));
+        } else {
+            List<Persona> personas = personaService.buscarTodas();
+            cmbArtistas.setItems(FXCollections.observableArrayList(personas));
+        }
+        
+        // Configurar cómo se muestran las personas en el ComboBox
+        cmbArtistas.setCellFactory(lv -> new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+        
+        cmbArtistas.setButtonCell(new ListCell<Persona>() {
+            @Override
+            protected void updateItem(Persona persona, boolean empty) {
+                super.updateItem(persona, empty);
+                setText(empty ? "" : persona.getNombre() + " " + persona.getApellido() + " - " + persona.getDni());
+            }
+        });
+    }
+
+
+
     /**
      * Carga la lista de personas para seleccionar organizadores.
      */
@@ -324,6 +424,55 @@ public class FormularioEventoController implements Initializable {
         // Limpiar selección
         cmbPersonas.setValue(null);
     }
+
+
+    /**
+     * Agrega un artista a la lista de artistas seleccionados.
+     * @param event El evento de acción
+     */
+    @FXML
+    private void agregarArtista(ActionEvent event) {
+        Persona artistaSeleccionado = cmbArtistas.getValue();
+        
+        if (artistaSeleccionado == null) {
+            mostrarError("Debe seleccionar una persona para agregar como artista");
+            return;
+        }
+        
+        // Verificar si ya está agregado
+        if (artistasSeleccionados.stream().anyMatch(p -> p.getId().equals(artistaSeleccionado.getId()))) {
+            mostrarError("Esta persona ya está agregada como artista");
+            return;
+        }
+        
+        // Agregar a la lista
+        artistasSeleccionados.add(artistaSeleccionado);
+        
+        // Actualizar la tabla
+        tablaArtistas.refresh();
+        
+        // Actualizar mensaje informativo
+        actualizarMensajeInfoArtistas();
+        
+        // Limpiar la selección
+        cmbArtistas.getSelectionModel().clearSelection();
+    }
+
+    /**
+     * Actualiza el mensaje informativo sobre artistas seleccionados.
+     */
+    private void actualizarMensajeInfoArtistas() {
+        int cantidadArtistas = artistasSeleccionados.size();
+        if (cantidadArtistas == 0) {
+            lblArtistasInfo.setText("Debe agregar al menos un artista");
+            lblArtistasInfo.getStyleClass().add("error-label");
+        } else {
+            lblArtistasInfo.setText("Artistas seleccionados: " + cantidadArtistas);
+            lblArtistasInfo.getStyleClass().remove("error-label");
+        }
+    }
+
+
 
     
     /**
@@ -443,8 +592,31 @@ public class FormularioEventoController implements Initializable {
      * @param concierto Evento de concierto a cargar
      */
     private void cargarDatosConcierto(Concierto concierto) {
-        txtArtistaPrincipal.setText(concierto.getArtistaPrincipal());
         cmbTipoEntrada.setValue(concierto.getTipoEntrada());
+        
+        // Buscar los artistas entre las participaciones si el evento ya existe
+        if (concierto.getId() != null) {
+            try {
+                // Limpiar lista actual
+                artistasSeleccionados.clear();
+                
+                // Buscar artistas por participación
+                List<Participacion> participacionesArtistas = eventoService.buscarPorEventoYRol(concierto.getId(), RolParticipacion.ARTISTA);
+                
+                // Agregar cada artista a la lista
+                for (Participacion participacion : participacionesArtistas) {
+                    artistasSeleccionados.add(participacion.getPersona());
+                }
+                
+                // Actualizar tabla
+                tablaArtistas.refresh();
+                
+                // Actualizar mensaje informativo
+                actualizarMensajeInfoArtistas();
+            } catch (Exception e) {
+                mostrarError("Error al cargar artistas: " + e.getMessage());
+            }
+        }
     }
     
     /**
@@ -692,24 +864,45 @@ public class FormularioEventoController implements Initializable {
             return null;
         }
         
-        String artistaPrincipal = txtArtistaPrincipal.getText().trim().toUpperCase();
         TipoEntrada tipoEntrada = cmbTipoEntrada.getValue();
+        
+        Concierto concierto;
         
         if (esEdicion && eventoEditando instanceof Concierto) {
             // Actualizar existente
-            Concierto concierto = (Concierto) eventoEditando;
+            concierto = (Concierto) eventoEditando;
             concierto.setNombre(nombre);
             concierto.setFechaInicio(fechaInicio);
             concierto.setDuracionEstimada(duracionEstimada);
             concierto.setEstadoEvento(estadoEvento);
             concierto.setPermiteInscripcion(permiteInscripcion);
-            concierto.setArtistaPrincipal(artistaPrincipal);
             concierto.setTipoEntrada(tipoEntrada);
-            return concierto;
         } else {
             // Crear nuevo
-            return new Concierto(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoEntrada, artistaPrincipal);
+            concierto = new Concierto(nombre, fechaInicio, duracionEstimada, estadoEvento, permiteInscripcion, tipoEntrada);
         }
+        
+        // Guardar primero el evento para que tenga un ID
+        Concierto conciertoGuardado = (Concierto) eventoService.guardar(concierto);
+        
+        try {
+            // Si es edición, eliminar los artistas anteriores
+            if (esEdicion) {
+                List<Participacion> participacionesArtistas = eventoService.buscarPorEventoYRol(conciertoGuardado.getId(), RolParticipacion.ARTISTA);
+                for (Participacion p : participacionesArtistas) {
+                    eventoService.eliminarParticipacion(conciertoGuardado.getId(), p.getPersona().getId());
+                }
+            }
+            
+            // Agregar los artistas como participaciones
+            for (Persona artista : artistasSeleccionados) {
+                eventoService.agregarParticipacion(conciertoGuardado.getId(), artista, RolParticipacion.ARTISTA);
+            }
+        } catch (Exception e) {
+            mostrarError("Error al asignar artistas: " + e.getMessage());
+        }
+        
+        return conciertoGuardado;
     }
     
     /**
@@ -933,18 +1126,17 @@ public class FormularioEventoController implements Initializable {
      * @return true si los campos son válidos, false en caso contrario
      */
     private boolean validarCamposConcierto() {
-        limpiarEstilosCampos(txtArtistaPrincipal, cmbTipoEntrada);
-        // Validar artista principal
-        if (txtArtistaPrincipal.getText() == null || txtArtistaPrincipal.getText().trim().isEmpty()) {
-            mostrarError("El artista principal es obligatorio");
-            txtArtistaPrincipal.getStyleClass().add("campo-invalido");
-            return false;
-        }
+        limpiarEstilosCampos(cmbTipoEntrada);
         
-        // Validar tipo de entrada
         if (cmbTipoEntrada.getValue() == null) {
             mostrarError("Debe seleccionar un tipo de entrada");
             cmbTipoEntrada.getStyleClass().add("campo-invalido");
+            return false;
+        }
+        
+        if (artistasSeleccionados.isEmpty()) {
+            mostrarError("Debe agregar al menos un artista al concierto");
+            lblArtistasInfo.getStyleClass().add("error-label");
             return false;
         }
         
