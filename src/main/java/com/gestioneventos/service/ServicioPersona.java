@@ -50,18 +50,6 @@ public class ServicioPersona {
         
         return persona.getId() == null ? repositorioPersona.guardar(persona) : repositorioPersona.actualizar(persona);
     }
-
-    /**
-     * Busca una persona por su ID.
-     * @param id ID de la persona a buscar
-     * @return Optional con la persona si es encontrada, o vacío si no existe
-     */
-    public Optional<Persona> buscarPorId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
-        }
-        return repositorioPersona.buscarPorId(id);
-    }
     
     /**
      * Obtiene todas las personas.

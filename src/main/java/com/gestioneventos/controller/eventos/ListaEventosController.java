@@ -8,7 +8,6 @@ import com.gestioneventos.service.ServicioEvento;
 import com.gestioneventos.model.eventos.Concierto;
 import com.gestioneventos.model.eventos.Exposicion;
 import com.gestioneventos.model.eventos.Feria;
-import com.gestioneventos.model.eventos.EstadoEvento;
 import com.gestioneventos.util.DateUtils;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -51,14 +50,8 @@ public class ListaEventosController implements Initializable {
     @FXML private TableColumn<Evento, String> colDetalle;
     @FXML private TableColumn<Evento, String> colPermiteInscripcion;
     
-    // Elementos de filtrado
-    @FXML private TextField txtFiltroNombre;
-    @FXML private ComboBox<EstadoEvento> cmbFiltroEstado;
-    @FXML private DatePicker dpFiltroFechaDesde;
-    @FXML private DatePicker dpFiltroFechaHasta;
-    @FXML private ComboBox<String> cmbFiltroTipo;
-    
     // Acciones
+    @FXML private TextField txtBuscarNombre;
     @FXML private Button btnNuevoEvento;
     @FXML private Button btnEditarEvento;
     @FXML private Button btnEliminarEvento;
@@ -85,9 +78,6 @@ public class ListaEventosController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Configurar columnas de la tabla
         configurarColumnas();
-        
-        // Inicializar filtros
-        inicializarFiltros();
         
         // Configurar selección de la tabla
         configurarSeleccionTabla();
@@ -163,26 +153,6 @@ public class ListaEventosController implements Initializable {
     }
     
     /**
-     * Inicializa los filtros de búsqueda.
-     */
-    private void inicializarFiltros() {
-        // Inicializar ComboBox de estados
-        cmbFiltroEstado.setItems(FXCollections.observableArrayList(EstadoEvento.values()));
-        cmbFiltroEstado.getItems().add(0, null); // Opción para "Todos"
-        cmbFiltroEstado.setPromptText("Todos los estados");
-        
-        // Inicializar ComboBox de tipos
-        cmbFiltroTipo.setItems(FXCollections.observableArrayList(
-            "Todos", "Cine", "Taller", "Concierto", "Exposición", "Feria"
-        ));
-        cmbFiltroTipo.getSelectionModel().selectFirst();
-        
-        // Inicializar fechas
-        dpFiltroFechaDesde.setValue(null);
-        dpFiltroFechaHasta.setValue(null);
-    }
-    
-    /**
      * Configura el comportamiento de selección de la tabla.
      */
     private void configurarSeleccionTabla() {
@@ -221,105 +191,35 @@ public class ListaEventosController implements Initializable {
             mostrarMensajeError("Error al cargar eventos", "No se pudieron cargar los eventos: " + e.getMessage());
         }
     }
-    
-    /**
-     * Limpia los filtros de búsqueda y muestra todos los eventos.
-     */
+
     @FXML
-    private void limpiarFiltros() {
-        txtFiltroNombre.clear();
-        cmbFiltroEstado.getSelectionModel().clearSelection();
-        cmbFiltroEstado.setPromptText("Todos los estados");
-        dpFiltroFechaDesde.setValue(null);
-        dpFiltroFechaHasta.setValue(null);
-        cmbFiltroTipo.getSelectionModel().selectFirst();
+    private void buscarPorNombre(ActionEvent event) {
+        String nombreBuscado = txtBuscarNombre.getText().trim();
         
-        cargarEventos();
-    }
-    
-    /**
-     * Aplica los filtros seleccionados.
-     */
-    @FXML
-    private void aplicarFiltros() {
+        if (nombreBuscado.isEmpty()) {
+            cargarEventos(); // Si el campo está vacío, cargar todos los eventos
+            return;
+        }
+        
         try {
-            // Obtener valores de filtros
-            String nombre = txtFiltroNombre.getText().trim().isEmpty() ? null : txtFiltroNombre.getText().trim();
-            EstadoEvento estado = cmbFiltroEstado.getValue();
-            LocalDate fechaDesde = dpFiltroFechaDesde.getValue();
-            LocalDate fechaHasta = dpFiltroFechaHasta.getValue();
-            String tipo = cmbFiltroTipo.getValue().equals("Todos") ? null : cmbFiltroTipo.getValue();
+            // Usar el método del servicio para buscar por nombre
+            List<Evento> eventosFiltrados = eventoService.buscarPorNombre(nombreBuscado);
             
-            // Obtener eventos (inicialmente todos)
-            List<Evento> eventos = eventoService.buscarTodos();
-            
-            // Filtrar por nombre si se especificó
-            if (nombre != null && !nombre.isEmpty()) {
-                eventos = eventos.stream()
-                    .filter(e -> e.getNombre().toLowerCase().contains(nombre.toLowerCase()))
-                    .toList();
-            }
-            
-            // Filtrar por estado si se especificó
-            if (estado != null) {
-                eventos = eventos.stream()
-                    .filter(e -> e.getEstadoEvento() == estado)
-                    .toList();
-            }
-            
-            // Filtrar por rango de fechas si se especificaron ambas
-            if (fechaDesde != null && fechaHasta != null) {
-                eventos = eventos.stream()
-                    .filter(e -> {
-                        LocalDate fechaFin = e.getFechaInicio().plusDays(e.getDuracionEstimada());
-                        return (!e.getFechaInicio().isAfter(fechaHasta) && !fechaFin.isBefore(fechaDesde));
-                    })
-                    .toList();
-            }
-            // Solo fecha desde
-            else if (fechaDesde != null) {
-                eventos = eventos.stream()
-                    .filter(e -> {
-                        LocalDate fechaFin = e.getFechaInicio().plusDays(e.getDuracionEstimada());
-                        return !fechaFin.isBefore(fechaDesde);
-                    })
-                    .toList();
-            }
-            // Solo fecha hasta
-            else if (fechaHasta != null) {
-                eventos = eventos.stream()
-                    .filter(e -> !e.getFechaInicio().isAfter(fechaHasta))
-                    .toList();
-            }
-            
-            // Filtrar por tipo si se especificó
-            if (tipo != null) {
-                eventos = eventos.stream()
-                    .filter(e -> {
-                        if (tipo.equals("Cine")) return e instanceof Cine;
-                        if (tipo.equals("Taller")) return e instanceof Taller;
-                        if (tipo.equals("Concierto")) return e instanceof Concierto;
-                        if (tipo.equals("Exposición")) return e instanceof Exposicion;
-                        if (tipo.equals("Feria")) return e instanceof Feria;
-                        return true;
-                    })
-                    .toList();
-            }
-            
-            // Actualizar tabla con resultados filtrados
+            // Actualizar la tabla con los resultados
             eventosObservable.clear();
-            eventosObservable.addAll(eventos);
+            eventosObservable.addAll(eventosFiltrados);
             
-            // Mensaje si no hay resultados
-            if (eventos.isEmpty()) {
-                tablaEventos.setPlaceholder(new Label("No se encontraron eventos con los filtros aplicados"));
+            // Mostrar mensaje si no hay resultados
+            if (eventosFiltrados.isEmpty()) {
+                tablaEventos.setPlaceholder(new Label("No se encontraron eventos con el nombre \"" + nombreBuscado + "\""));
             }
             
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarMensajeError("Error al aplicar filtros", "No se pudieron aplicar los filtros: " + e.getMessage());
+            mostrarMensajeError("Error al buscar", "No se pudieron buscar eventos: " + e.getMessage());
         }
     }
+    
 
     /**
      * Abre el formulario para crear un nuevo evento.
@@ -473,16 +373,6 @@ public class ListaEventosController implements Initializable {
             mostrarMensajeError("Error al abrir ventana", 
                 "No se pudo abrir la ventana de participantes: " + e.getMessage());
         }
-    }
-
-    /**
-     * Busca eventos según los filtros actuales.
-     * Este método es llamado desde el botón Buscar.
-     */
-    @FXML
-    private void buscarEventos(ActionEvent event) {
-        // Simplemente delega en aplicarFiltros
-        aplicarFiltros();
     }
 
     /**

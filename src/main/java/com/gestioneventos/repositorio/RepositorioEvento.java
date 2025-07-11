@@ -1,12 +1,10 @@
 package com.gestioneventos.repositorio;
 
 import com.gestioneventos.model.eventos.Evento;
-import com.gestioneventos.model.eventos.EstadoEvento;
 import com.gestioneventos.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,20 +163,6 @@ public class RepositorioEvento {
     }
 
     /**
-     * Cuenta la cantidad total de eventos en la base de datos.
-     * @return Cantidad de eventos
-     */
-    public long contarTotal() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(e) FROM Evento e", Long.class);
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
      * Busca eventos por coincidencia parcial en el nombre.
      * @param nombre Texto a buscar en el nombre del evento
      * @return Lista de eventos que coinciden con el criterio
@@ -192,79 +176,6 @@ public class RepositorioEvento {
                 Evento.class
             );
             query.setParameter("nombre", "%" + nombre + "%");
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
-     * Busca eventos por su estado.
-     * @param estado Estado del evento a buscar
-     * @return Lista de eventos en el estado especificado
-     */
-    public List<Evento> buscarPorEstado(EstadoEvento estado) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            TypedQuery<Evento> query = em.createQuery(
-                "SELECT e FROM Evento e WHERE e.estadoEvento = :estado " +
-                "ORDER BY e.fechaInicio DESC", 
-                Evento.class
-            );
-            query.setParameter("estado", estado);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
-     * Busca eventos que ocurren en una fecha específica.
-     * @param fecha Fecha a buscar
-     * @return Lista de eventos que ocurren en esa fecha
-     */
-    public List<Evento> buscarPorFecha(LocalDate fecha) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            // Buscar eventos que ocurren en la fecha especificada (su fecha de inicio 
-            // es igual o anterior a la fecha dada y la fecha dada está dentro del 
-            // período del evento considerando su duración)
-            TypedQuery<Evento> query = em.createQuery(
-                "SELECT e FROM Evento e WHERE " +
-                "(e.fechaInicio <= :fecha AND " +
-                "FUNCTION('DATE_ADD', e.fechaInicio, e.duracionEstimada, 'DAY') >= :fecha) " +
-                "ORDER BY e.fechaInicio DESC",
-                Evento.class
-            );
-            query.setParameter("fecha", fecha);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
-     * Busca eventos que se superponen con un rango de fechas.
-     * @param fechaInicio Fecha de inicio del rango
-     * @param fechaFin Fecha de fin del rango
-     * @return Lista de eventos dentro del rango de fechas
-     */
-    public List<Evento> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            // Buscar eventos que se superponen con el rango de fechas dado
-            TypedQuery<Evento> query = em.createQuery(
-                "SELECT e FROM Evento e WHERE " +
-                "((e.fechaInicio >= :fechaInicio AND e.fechaInicio <= :fechaFin) OR " +
-                "(FUNCTION('DATE_ADD', e.fechaInicio, e.duracionEstimada, 'DAY') >= :fechaInicio AND " +
-                "FUNCTION('DATE_ADD', e.fechaInicio, e.duracionEstimada, 'DAY') <= :fechaFin) OR " +
-                "(e.fechaInicio <= :fechaInicio AND " +
-                "FUNCTION('DATE_ADD', e.fechaInicio, e.duracionEstimada, 'DAY') >= :fechaFin)) " +
-                "ORDER BY e.fechaInicio DESC",
-                Evento.class
-            );
-            query.setParameter("fechaInicio", fechaInicio);
-            query.setParameter("fechaFin", fechaFin);
             return query.getResultList();
         } finally {
             em.close();

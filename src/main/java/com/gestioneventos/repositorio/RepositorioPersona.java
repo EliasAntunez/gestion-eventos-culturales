@@ -182,21 +182,6 @@ public class RepositorioPersona {
     }
 
     /**
-     * Cuenta la cantidad total de personas en la base de datos.
-     * @return Cantidad de personas
-     */
-    public long contarTotal() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            // Consulta JPQL para contar las personas
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Persona p", Long.class);
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
      * Busca una persona por su DNI.
      * @param dni DNI a buscar
      * @return Optional con la persona si existe

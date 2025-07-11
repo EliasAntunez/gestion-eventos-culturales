@@ -167,21 +167,6 @@ public abstract class RepositorioBase<T, ID> {
     }
     
     /**
-     * Cuenta el número total de entidades.
-     * @return Número de entidades
-     */
-    public long contarTotal() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            String jpql = "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e";
-            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
-    }
-    
-    /**
      * Guarda o actualiza una entidad dependiendo si tiene id o no.
      * Esta implementación genérica debe ser extendida en subclases
      * para manejar correctamente la lógica de detección de ID.

@@ -23,7 +23,6 @@
             <!-- Flecha y título en la misma fila -->
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="titulo-personas">
                <children>
-                  <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#volver" text="← Volver"/>
                   <Label fx:id="labelGestion" text="Gestión de Personas">
                         <font>
                            <Font name="System Bold" size="18.0" />

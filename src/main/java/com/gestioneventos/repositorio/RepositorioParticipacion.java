@@ -165,20 +165,6 @@ public class RepositorioParticipacion {
     }
 
     /**
-     * Cuenta la cantidad total de participaciones en la base de datos.
-     * @return Cantidad de participaciones
-     */
-    public long contarTotal() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Participacion p", Long.class);
-            return query.getSingleResult();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
      * Busca participaciones asociadas a un evento específico.
      * @param eventoId ID del evento
      * @return Lista de participaciones del evento

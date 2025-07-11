@@ -1,11 +1,9 @@
 package com.gestioneventos.service;
 
 import com.gestioneventos.model.participaciones.Participacion;
-import com.gestioneventos.model.participaciones.RolParticipacion;
 import com.gestioneventos.repositorio.RepositorioParticipacion;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Servicio para la gestión de participaciones en eventos.
@@ -56,18 +54,6 @@ public class ServicioParticipacion {
     }
 
     /**
-     * Busca una participación por su ID.
-     * @param id ID de la participación a buscar
-     * @return Optional con la participación si es encontrada, o vacío si no existe
-     */
-    public Optional<Participacion> buscarPorId(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("El ID de la participación no puede ser nulo");
-        }
-        return repositorioParticipacion.buscarPorId(id);
-    }
-
-    /**
      * Busca todas las participaciones.
      * @return Lista con todas las participaciones
      */
@@ -97,38 +83,6 @@ public class ServicioParticipacion {
             throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
         }
         return repositorioParticipacion.buscarPorPersonaId(personaId);
-    }
-    
-    /**
-     * Busca participaciones por el ID del evento y un rol específico.
-     * @param eventoId ID del evento
-     * @param rol Rol de la participación
-     * @return Lista de participaciones que cumplen ambos criterios
-     */
-    public List<Participacion> buscarPorEventoYRol(Long eventoId, RolParticipacion rol) {
-        if (eventoId == null) {
-            throw new IllegalArgumentException("El ID del evento no puede ser nulo");
-        }
-        if (rol == null) {
-            throw new IllegalArgumentException("El rol no puede ser nulo");
-        }
-        return repositorioParticipacion.buscarPorEventoIdYRol(eventoId, rol);
-    }
-    
-    /**
-     * Busca participaciones por evento y persona.
-     * @param eventoId ID del evento
-     * @param personaId ID de la persona
-     * @return Lista de participaciones que cumplen ambos criterios
-     */
-    public List<Participacion> buscarPorEventoYPersona(Long eventoId, Long personaId) {
-        if (eventoId == null) {
-            throw new IllegalArgumentException("El ID del evento no puede ser nulo");
-        }
-        if (personaId == null) {
-            throw new IllegalArgumentException("El ID de la persona no puede ser nulo");
-        }
-        return repositorioParticipacion.buscarPorEventoIdYPersonaId(eventoId, personaId);
     }
 
     /**

@@ -291,15 +291,6 @@ public class ListaPersonasController implements Initializable {
     }
     
     /**
-     * Cierra la ventana actual para volver a la anterior.
-     */
-    @FXML
-    private void volver(ActionEvent event) {
-        // Obtener la ventana actual y cerrarla
-        ((Stage) btnVolver.getScene().getWindow()).close();
-    }
-    
-    /**
      * Método público para actualizar la tabla desde otros controladores.
      * Usado desde FormularioPersonaController al guardar cambios.
      */

@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Servicio para la gestión de eventos culturales.
@@ -51,9 +50,6 @@ public class ServicioEvento {
         if (evento == null) {
             throw new IllegalArgumentException("El evento no puede ser nulo");
         }
-        
-        // Validar los campos obligatorios del evento
-        validarEvento(evento);
         
         // Verificar si la fecha es válida para nuevos eventos
         if (evento.getFechaInicio().isBefore(LocalDate.now()) && evento.getId() == null) {
@@ -128,54 +124,7 @@ public class ServicioEvento {
         
         return repositorioEvento.buscarPorNombre(nombre);
     }
-    
-    /**
-     * Busca eventos programados para una fecha específica.
-     * @param fecha Fecha a buscar
-     * @return Lista de eventos en la fecha especificada
-     */
-    public List<Evento> buscarPorFecha(LocalDate fecha) {
-        if (fecha == null) {
-            throw new IllegalArgumentException("La fecha de búsqueda no puede ser nula");
-        }
-        
-        return repositorioEvento.buscarTodos().stream()
-                .filter(e -> estaEnFecha(e, fecha))
-                .collect(Collectors.toList());
-    }
-    
-    /**
-     * Busca eventos que ocurren dentro de un rango de fechas.
-     * @param fechaInicio Fecha de inicio del rango
-     * @param fechaFin Fecha de fin del rango
-     * @return Lista de eventos dentro del rango especificado
-     */
-    public List<Evento> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        if (fechaInicio == null || fechaFin == null) {
-            throw new IllegalArgumentException("Las fechas del rango no pueden ser nulas");
-        }
-        
-        if (fechaInicio.isAfter(fechaFin)) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin");
-        }
-        
-        return repositorioEvento.buscarTodos().stream()
-                .filter(e -> estaEnRangoFechas(e, fechaInicio, fechaFin))
-                .collect(Collectors.toList());
-    }
-    
-    /**
-     * Busca eventos por su estado.
-     * @param estado Estado del evento a buscar
-     * @return Lista de eventos en el estado especificado
-     */
-    public List<Evento> buscarPorEstado(EstadoEvento estado) {
-        if (estado == null) {
-            throw new IllegalArgumentException("El estado del evento no puede ser nulo");
-        }
-        
-        return repositorioEvento.buscarPorEstado(estado);
-    }
+
     
     /**
      * Cambia el estado de un evento.
@@ -304,43 +253,5 @@ public class ServicioEvento {
         }
         
         return eventos;
-    }
-    
-    // Métodos auxiliares
-    
-    /**
-     * Valida que los campos obligatorios del evento estén presentes.
-     */
-    private void validarEvento(Evento evento) {
-        // Las validaciones ya están en los setters del modelo
-        // Este método puede extenderse con validaciones adicionales de negocio
-    }
-    
-    /**
-     * Verifica si un evento está activo en una fecha específica.
-     */
-    private boolean estaEnFecha(Evento evento, LocalDate fecha) {
-        LocalDate fechaInicio = evento.getFechaInicio();
-        LocalDate fechaFin = fechaInicio.plusDays(evento.getDuracionEstimada());
-        
-        return !fecha.isBefore(fechaInicio) && !fecha.isAfter(fechaFin);
-    }
-    
-    /**
-     * Verifica si un evento está activo en un rango de fechas.
-     */
-    private boolean estaEnRangoFechas(Evento evento, LocalDate fechaInicio, LocalDate fechaFin) {
-        LocalDate eventoInicio = evento.getFechaInicio();
-        LocalDate eventoFin = eventoInicio.plusDays(evento.getDuracionEstimada());
-        
-        // Un evento está en el rango si:
-        // - La fecha de inicio del evento está dentro del rango, o
-        // - La fecha de fin del evento está dentro del rango, o
-        // - El rango está contenido dentro de la duración del evento
-        return (eventoInicio.isEqual(fechaInicio) || eventoInicio.isAfter(fechaInicio)) && 
-               (eventoInicio.isEqual(fechaFin) || eventoInicio.isBefore(fechaFin)) ||
-               (eventoFin.isEqual(fechaInicio) || eventoFin.isAfter(fechaInicio)) && 
-               (eventoFin.isEqual(fechaFin) || eventoFin.isBefore(fechaFin)) ||
-               (eventoInicio.isBefore(fechaInicio) && eventoFin.isAfter(fechaFin));
     }
 }
