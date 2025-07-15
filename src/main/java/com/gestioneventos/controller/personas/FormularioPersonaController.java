@@ -253,6 +253,19 @@ public class FormularioPersonaController implements Initializable {
     return false;
     }
 
+    //validar telefono sea valido si se ingresa
+    if(!txtTelefono.getText().trim().isEmpty()) {
+        String telefono = txtTelefono.getText();
+        if (!telefono.matches("\\d+")) {
+            lblError.setText("El teléfono debe contener solo números");
+            return false;
+        }
+        if (telefono.length() < 7 || telefono.length() > 15) {
+            lblError.setText("El teléfono debe tener entre 7 y 15 dígitos");
+            return false;
+        }
+    }
+    
     // Validar DNI duplicado
     if (!esEdicion || !dni.equals(persona.getDni())) {
         Long idExcluido = esEdicion ? persona.getId() : null;

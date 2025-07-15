@@ -85,7 +85,18 @@ public class Persona {
     }
     
     public void setTelefono(String telefono) {
-        this.telefono = telefono;
+        //validar que si tiene datos, que sea un NUMERO de teléfono válido
+        //tiene que ser numero no letras:
+        if (telefono != null && !telefono.trim().isEmpty()) {
+            if (!telefono.matches("\\d+")) {
+                throw new IllegalArgumentException("El teléfono debe contener solo números");
+            }
+            this.telefono = telefono;
+        } else {
+            this.telefono = null; // Permitir que el teléfono sea nulo o vacío
+
+
+        }
     }
     
     public String getEmail() {
